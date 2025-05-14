@@ -1,0 +1,72 @@
+.header {
+  margin-top: 120px; /* Increased space below navbar */
+  text-align: center;
+  padding: 2rem;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color: #333;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #555;
+  line-height: 1.6;
+  max-width: 1000px;
+  margin: 0 auto;
+  white-space: nowrap;
+  margin-bottom: 3.5rem;
+}
+
+.upload-button {
+  background-color: white;
+  color: #333;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.upload-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.upload-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@media screen and (max-width: 768px) {
+  .header {
+    margin-top: 100px; /* Increased space for mobile */
+    padding: 1.5rem;
+  }
+
+  .header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    padding: 0 1rem;
+    white-space: normal;
+    margin-bottom: 2.5rem;
+  }
+
+  .upload-button {
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+  }
+} 
