@@ -19,7 +19,7 @@ const Upload = () => {
 
   const [isUploading, setIsUploading] = useState(false); // New state to track upload process
 
-  const API = process.env.REACT_APP_API_URL;
+  const API = "https://jntuh-backend.onrender.com";
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
