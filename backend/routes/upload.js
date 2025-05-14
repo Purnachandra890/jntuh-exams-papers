@@ -42,8 +42,8 @@ router.post("/", upload.single("file"), async (req, res) => {
     await newFile.save();
 
     // Send confirmation email to admin
-    const approveLink = `http://localhost:5000/api/verify/${newFile._id}/approve`;
-    const rejectLink = `http://localhost:5000/api/verify/${newFile._id}/reject`;
+    const approveLink = `https://jntuh-backend.onrender.com/api/verify/${newFile._id}/approve`;
+    const rejectLink = `https://jntuh-backend.onrender.com/api/verify/${newFile._id}/reject`;
 
     await sendEmail({
       to: process.env.ADMIN_EMAIL,
