@@ -17,7 +17,7 @@ const VerifiedPapers = () => {
 
   const handleBack = () => navigate("/");
 
-  const API = process.env.REACT_APP_API_URL;
+  const API = "https://jntuh-backend.onrender.com";
 
   useEffect(() => {
     if (degree && regulation && semester && branch) {
