@@ -19,6 +19,8 @@ const Upload = () => {
 
   const [isUploading, setIsUploading] = useState(false); // New state to track upload process
 
+  const API = process.env.REACT_APP_API_URL;
+
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
@@ -94,15 +96,9 @@ const Upload = () => {
 
     try {
       // Make a POST request to the server with the FormData
-      const response = await axios.post(
-        "http://localhost:5000/api/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post(`${API}/api/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       if (response.status === 201) {
         alert("File uploaded successfully and is pending review");
@@ -122,10 +118,16 @@ const Upload = () => {
       if (error.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
-        alert(`Upload failed: ${error.response.data.message || 'Server error occurred'}`);
+        alert(
+          `Upload failed: ${
+            error.response.data.message || "Server error occurred"
+          }`
+        );
       } else if (error.request) {
         // The request was made but no response was received
-        alert("Upload failed: No response from server. Please check your internet connection.");
+        alert(
+          "Upload failed: No response from server. Please check your internet connection."
+        );
       } else {
         // Something happened in setting up the request that triggered an Error
         alert(`Upload failed: ${error.message}`);

@@ -17,6 +17,8 @@ const VerifiedPapers = () => {
 
   const handleBack = () => navigate("/");
 
+  const API = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     if (degree && regulation && semester && branch) {
       fetchFiles();
@@ -27,7 +29,7 @@ const VerifiedPapers = () => {
     try {
       setLoading(true);
       setError("");
-      const response = await axios.get("http://localhost:5000/api/getfile", {
+      const response = await axios.get(`${API}/api/getfile`, {
         params: { degree, regulation, semester, branch, status: "verified" },
       });
       setFiles(response.data);
@@ -41,7 +43,9 @@ const VerifiedPapers = () => {
   return (
     <div className="page-container">
       <div className="back-button-container">
-        <button className="back-button" onClick={handleBack}>← Back</button>
+        <button className="back-button" onClick={handleBack}>
+          ← Back
+        </button>
       </div>
 
       <div className="verified-papers-container">
@@ -56,7 +60,10 @@ const VerifiedPapers = () => {
             </select>
           </label>
           <label>
-            <select value={regulation} onChange={(e) => setRegulation(e.target.value)}>
+            <select
+              value={regulation}
+              onChange={(e) => setRegulation(e.target.value)}
+            >
               <option value="">-- Select Regulation --</option>
               <option value="R22">R22</option>
               <option value="R20">R20</option>
@@ -64,7 +71,10 @@ const VerifiedPapers = () => {
             </select>
           </label>
           <label>
-            <select value={semester} onChange={(e) => setSemester(e.target.value)}>
+            <select
+              value={semester}
+              onChange={(e) => setSemester(e.target.value)}
+            >
               <option value="">-- Select Semester --</option>
               <option value="1">1</option>
               <option value="2">2</option>
@@ -96,8 +106,14 @@ const VerifiedPapers = () => {
             {files.map((file) => (
               <div className="file-card" key={file._id}>
                 <h4>{file.subject || "paper"}</h4>
-                <p>Uploaded on: {new Date(file.createdAt).toLocaleDateString()}</p>
-                <a href={file.fileUrl} target="_blank" rel="noopener noreferrer">
+                <p>
+                  Uploaded on: {new Date(file.createdAt).toLocaleDateString()}
+                </p>
+                <a
+                  href={file.fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <button className="view-button">View / Download</button>
                 </a>
               </div>
@@ -105,9 +121,12 @@ const VerifiedPapers = () => {
           </div>
         )}
 
-        {!loading && files.length === 0 && degree && regulation && semester && branch && (
-          <p>No files found for the selected criteria.</p>
-        )}
+        {!loading &&
+          files.length === 0 &&
+          degree &&
+          regulation &&
+          semester &&
+          branch && <p>No files found for the selected criteria.</p>}
       </div>
     </div>
   );
