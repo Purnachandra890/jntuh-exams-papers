@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 
 // Middleware setup
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({ origin: 'https://jntuh-backend.onrender.com' }));// Enable CORS for all routes
 app.use(express.json()); // Parse incoming JSON requests
 app.use(express.urlencoded({ extended: true })); // for parsing form data
 app.use(morgan('dev')); // Log HTTP requests (development mode)
