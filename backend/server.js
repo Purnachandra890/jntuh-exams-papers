@@ -9,19 +9,21 @@ dotenv.config();
 const app = express();
 
 // 1) CORS whitelist
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://jntuh-exams-papers.onrender.com'
-];
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  }
-}));
+// const allowedOrigins = [
+//   'http://localhost:5173',
+//   'https://jntuh-exams-papers.onrender.com'
+// ];
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   }
+// }));
+
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -40,7 +42,7 @@ const verifyFileRoute = require('./routes/verifyFile');
 const deleteFileRoute = require('./routes/deleteFile');
 
 app.use('/api/files', getfiles);
-app.use('/api/upload', uploadRoute);
+app.use('/api/upload', uploadRoute)
 app.use('/api/getfile', getuserSelectionFile);
 app.use('/api/verify', verifyFileRoute);
 app.use('/api/deletefile', deleteFileRoute);

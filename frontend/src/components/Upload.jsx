@@ -16,10 +16,12 @@ const Upload = () => {
   const [semester, setSemester] = useState("");
   const [branch, setBranch] = useState("");
   const [subject, setSubject] = useState("");
+  const [examType, setexamType] = useState(""); // New state
 
   const [isUploading, setIsUploading] = useState(false); // New state to track upload process
 
-  const API = "https://jntuh-backend.onrender.com";
+  // const API = "https://jntuh-backend.onrender.com";
+  const API = "http://localhost:5000";
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
@@ -76,12 +78,14 @@ const Upload = () => {
       !regulation ||
       !semester ||
       !branch ||
-      !subject
+      !subject||
+      !examType
     ) {
       alert("All fields including file and subject are required");
       return;
     }
 
+    console.log(`exam type:${examType}`)
     // Set uploading to true to disable the button
     setIsUploading(true);
 
@@ -93,13 +97,16 @@ const Upload = () => {
     formData.append("semester", semester);
     formData.append("branch", branch);
     formData.append("subject", subject);
+    formData.append("examType", examType);
+
 
     try {
+      console.log("calling api");
       // Make a POST request to the server with the FormData
       const response = await axios.post(`${API}/api/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
+      console.log("response : "+response.data);
       if (response.status === 201) {
         alert("File uploaded successfully and is pending review");
         // Clear form after successful upload
@@ -110,6 +117,8 @@ const Upload = () => {
         setSemester("");
         setBranch("");
         setSubject("");
+        setexamType("");
+
       }
     } catch (error) {
       console.error("Upload Error:", error);
@@ -209,6 +218,17 @@ const Upload = () => {
               />
             </label>
           </div>
+          <label>
+            <select
+              value={examType}
+              onChange={(e) => setexamType(e.target.value)}
+            >
+              <option value="">-- Select Exam Type --</option>
+              <option value="Mid-1">Mid-1</option>
+              <option value="Mid-2">Mid-2</option>
+              <option value="Semester">Semester</option>
+            </select>
+          </label>
         </div>
 
         {/* Upload Section */}
@@ -254,7 +274,7 @@ const Upload = () => {
         </div>
       </div>
       {/* Upload Paper Button */}
-      {selectedFile && degree && regulation && semester && branch && (
+      {selectedFile && degree && regulation && semester && branch && subject && examType &&(
         <div className="upload-paper-button-container">
           <button
             className="upload-paper-button"

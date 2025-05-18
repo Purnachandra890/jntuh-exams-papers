@@ -10,13 +10,24 @@ const File = require("../models/File");
 // POST route to upload image and save to DB
 router.post("/", upload.single("file"), async (req, res) => {
   try {
-    const { degree, regulation, semester, branch, subject } = req.body;
-
+    const { degree, regulation, semester, branch, subject, examType } =
+      req.body;
+    console.log(req.body);
     // Validate required fields
-    if (!req.file || !degree || !regulation || !semester || !branch || !subject) {
+    if (
+      !req.file ||
+      !degree ||
+      !regulation ||
+      !semester ||
+      !branch ||
+      !subject ||
+      !examType
+    ) {
       return res
         .status(400)
-        .json({ message: "All fields including subject and image are required" });
+        .json({
+          message: "All fields including subject and image are required",
+        });
     }
 
     // Allow only image MIME types
@@ -37,13 +48,16 @@ router.post("/", upload.single("file"), async (req, res) => {
       branch,
       subject,
       status: "pending",
+      examType,
     });
 
     await newFile.save();
 
     // Send confirmation email to admin
-    const approveLink = `https://jntuh-backend.onrender.com/api/verify/${newFile._id}/approve`;
-    const rejectLink = `https://jntuh-backend.onrender.com/api/verify/${newFile._id}/reject`;
+    // const approveLink = `https://jntuh-backend.onrender.com/api/verify/${newFile._id}/approve`;
+    // const rejectLink = `https://jntuh-backend.onrender.com/api/verify/${newFile._id}/reject`;
+    const approveLink = `http://localhost:5000/api/verify/${newFile._id}/approve`;
+    const rejectLink = `http://localhost:5000/api/verify/${newFile._id}/reject`;
 
     await sendEmail({
       to: process.env.ADMIN_EMAIL,
@@ -55,6 +69,7 @@ router.post("/", upload.single("file"), async (req, res) => {
         <p><strong>Semester:</strong> ${semester}</p>
         <p><strong>Branch:</strong> ${branch}</p>
         <p><strong>Subject:</strong> ${subject}</p>
+        <p><strong>Exam Type:</strong> ${examType}</p>
         <p><strong>File:</strong> <a href="${fileUrl}" target="_blank">View File</a></p>
         <p>
           <a href="${approveLink}" style="padding:10px 15px;background:#28a745;color:#fff;text-decoration:none;margin-right:10px;">Approve Paper</a>

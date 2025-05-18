@@ -10,6 +10,7 @@ const VerifiedPapers = () => {
   const [regulation, setRegulation] = useState("");
   const [semester, setSemester] = useState("");
   const [branch, setBranch] = useState("");
+  const [examType, setExamType] = useState(""); // New state for exam type
 
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -17,21 +18,39 @@ const VerifiedPapers = () => {
 
   const handleBack = () => navigate("/");
 
-  const API = "https://jntuh-backend.onrender.com";
+  // const API = "https://jntuh-backend.onrender.com";
+  const API = "http://localhost:5000";
 
   useEffect(() => {
-    if (degree && regulation && semester && branch) {
+    if (degree && regulation && semester && branch && examType) {
       fetchFiles();
     }
-  }, [degree, regulation, semester, branch]);
+  }, [degree, regulation, semester, branch, examType]);
 
   const fetchFiles = async () => {
     try {
       setLoading(true);
       setError("");
       const response = await axios.get(`${API}/api/getfile`, {
-        params: { degree, regulation, semester, branch, status: "verified" },
+        params: {
+          degree,
+          regulation,
+          semester,
+          branch,
+          examType,
+          status: "verified",
+        },
       });
+      console.log("Response Data:", response.data);
+      console.log("Params Sent:", {
+        degree,
+        regulation,
+        semester,
+        branch,
+        examType,
+        status: "verified",
+      });
+
       setFiles(response.data);
     } catch (err) {
       setError("Failed to fetch files. Please try again.");
@@ -96,6 +115,17 @@ const VerifiedPapers = () => {
               <option value="CIVIL">CIVIL</option>
             </select>
           </label>
+          <label>
+            <select
+              value={examType}
+              onChange={(e) => setExamType(e.target.value)}
+            >
+              <option value="">-- Select Exam Type --</option>
+              <option value="Mid-1">Mid-1</option>
+              <option value="Mid-2">Mid-2</option>
+              <option value="Semester">Semester</option>
+            </select>
+          </label>
         </div>
 
         {loading && <p>Loading files...</p>}
@@ -126,7 +156,8 @@ const VerifiedPapers = () => {
           degree &&
           regulation &&
           semester &&
-          branch && <p>No files found for the selected criteria.</p>}
+          branch &&
+          examType && <p>No files found for the selected criteria.</p>}
       </div>
     </div>
   );
