@@ -29,6 +29,10 @@ const FileSchema = new mongoose.Schema({
     type: String,
     enum: ["pending", "verified"],
     default: "pending"
+  },
+  examType:{
+    type:String,
+    required:true
   }
 }, { timestamps: true });
 
