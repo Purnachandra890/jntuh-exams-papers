@@ -18,8 +18,8 @@ const VerifiedPapers = () => {
 
   const handleBack = () => navigate("/");
 
-  // const API = "https://jntuh-backend.onrender.com";
-  const API = "http://localhost:5000";
+  const API = "https://jntuh-backend.onrender.com";
+  // const API = "http://localhost:5000";
 
   useEffect(() => {
     if (degree && regulation && semester && branch && examType) {
