@@ -25,6 +25,11 @@ app.use(cors({
 
 // app.use(cors());
 
+// Static File Serving with Cache
+app.use(express.static("public", {
+  maxAge: "1y", // Cache static files for 1 year
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
