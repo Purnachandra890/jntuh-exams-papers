@@ -31,11 +31,11 @@ router.post("/", upload.single("file"), async (req, res) => {
     }
 
     // Allow only image MIME types
-    const allowedImageTypes = ["image/jpeg", "image/png", "image/webp"];
+    const allowedImageTypes = ["image/jpeg", "image/png", "image/webp","application/pdf"];
     if (!allowedImageTypes.includes(req.file.mimetype)) {
       return res
         .status(400)
-        .json({ message: "Only JPG, PNG, or WEBP image files are allowed." });
+        .json({ message: "Only JPG, PNG, WEBP or PDF  files are allowed." });
     }
 
     // Save with status = pending (for manual verification)
@@ -70,7 +70,7 @@ router.post("/", upload.single("file"), async (req, res) => {
         <p><strong>Branch:</strong> ${branch}</p>
         <p><strong>Subject:</strong> ${subject}</p>
         <p><strong>Exam Type:</strong> ${examType}</p>
-        <p><strong>File:</strong> <a href="${fileUrl}" target="_blank">View File</a></p>
+        <p><strong>File (${req.file.mimetype}):</strong> <a href="${fileUrl}" target="_blank">View File</a></p>
         <p>
           <a href="${approveLink}" style="padding:10px 15px;background:#28a745;color:#fff;text-decoration:none;margin-right:10px;">Approve Paper</a>
           <a href="${rejectLink}" style="padding:10px 15px;background:#dc3545;color:#fff;text-decoration:none;">Reject Paper</a>
