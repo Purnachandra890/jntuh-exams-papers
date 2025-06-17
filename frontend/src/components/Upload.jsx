@@ -265,7 +265,7 @@ const Upload = () => {
                   ref={fileInputRef}
                   onChange={handleFileSelect}
                   style={{ display: "none" }}
-                  accept=".jpg,.jpeg,.png"
+                  accept=".jpg,.jpeg,.png,.pdf"
                 />
               </>
             )}
