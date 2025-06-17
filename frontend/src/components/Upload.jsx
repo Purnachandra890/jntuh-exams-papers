@@ -25,11 +25,11 @@ const Upload = () => {
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file && (file.type.startsWith("image/") || file.type === "application/pdf")) {
       setSelectedFile(file);
       const fileUrl = URL.createObjectURL(file);
-      setPreviewUrl(fileUrl);
-      console.log("Selected file:", file.name);
+      setPreviewUrl(file.type.startsWith("image/") ? fileUrl : null);
+      // console.log("Selected file:", file.name);
     } else {
       alert("Please select an image file (JPG, PNG)");
     }
@@ -45,18 +45,22 @@ const Upload = () => {
   };
 
   const handleDrop = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const file = event.dataTransfer.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setSelectedFile(file);
-      const fileUrl = URL.createObjectURL(file);
-      setPreviewUrl(fileUrl);
-      console.log("Dropped file:", file.name);
-    } else {
-      alert("Please drop an image file (JPG, PNG)");
-    }
-  };
+  event.preventDefault();
+  event.stopPropagation();
+  const file = event.dataTransfer.files[0];
+  if (
+    file &&
+    (file.type.startsWith("image/") || file.type === "application/pdf")
+  ) {
+    setSelectedFile(file);
+    const fileUrl = URL.createObjectURL(file);
+    setPreviewUrl(file.type.startsWith("image/") ? fileUrl : null);
+    // console.log("Dropped file:", file.name);
+  } else {
+    alert("Please drop an image or PDF file (JPG, PNG, PDF)");
+  }
+};
+
 
   const handleRemoveFile = () => {
     setSelectedFile(null);
@@ -269,7 +273,7 @@ const Upload = () => {
                 />
               </>
             )}
-            <p className="file-types">Supported formats: JPG, PNG</p>
+            <p className="file-types">Supported formats: JPG, PNG,PDF</p>
           </div>
         </div>
       </div>
