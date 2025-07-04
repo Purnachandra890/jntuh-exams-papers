@@ -20,7 +20,6 @@ const Upload = () => {
 
   const [isUploading, setIsUploading] = useState(false); // New state to track upload process
 
-  // const API = "https://jntuh-backend.onrender.com";
   const API = `${import.meta.env.VITE_REACT_APP_API_URL}`;
   // const API = "http://localhost:5000";
 
