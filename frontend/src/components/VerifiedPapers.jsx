@@ -18,7 +18,8 @@ const VerifiedPapers = () => {
 
   const handleBack = () => navigate("/");
 
-  const API = "https://jntuh-backend.onrender.com";
+  // const API = "https://jntuh-backend.onrender.com";
+  const API = `${import.meta.env.VITE_REACT_APP_API_URL}`;
   // const API = "http://localhost:5000";
 
   useEffect(() => {
