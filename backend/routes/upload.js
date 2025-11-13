@@ -59,24 +59,24 @@ router.post("/", upload.single("file"), async (req, res) => {
     // const approveLink = `http://localhost:5000/api/verify/${newFile._id}/approve`;
     // const rejectLink = `http://localhost:5000/api/verify/${newFile._id}/reject`;
 
-    // await sendEmail({
-    //   to: process.env.ADMIN_EMAIL,
-    //   subject: "New Paper Uploaded - Verification Required",
-    //   html: `
-    //     <h3>New Paper Uploaded</h3>
-    //     <p><strong>Degree:</strong> ${degree}</p>
-    //     <p><strong>Regulation:</strong> ${regulation}</p>
-    //     <p><strong>Semester:</strong> ${semester}</p>
-    //     <p><strong>Branch:</strong> ${branch}</p>
-    //     <p><strong>Subject:</strong> ${subject}</p>
-    //     <p><strong>Exam Type:</strong> ${examType}</p>
-    //     <p><strong>File:</strong> <a href="${fileUrl}" target="_blank">View File</a></p>
-    //     <p>
-    //       <a href="${approveLink}" style="padding:10px 15px;background:#28a745;color:#fff;text-decoration:none;margin-right:10px;">Approve Paper</a>
-    //       <a href="${rejectLink}" style="padding:10px 15px;background:#dc3545;color:#fff;text-decoration:none;">Reject Paper</a>
-    //     </p>
-    //   `,
-    // });
+    await sendEmail({
+      to: process.env.ADMIN_EMAIL,
+      subject: "New Paper Uploaded - Verification Required",
+      html: `
+        <h3>New Paper Uploaded</h3>
+        <p><strong>Degree:</strong> ${degree}</p>
+        <p><strong>Regulation:</strong> ${regulation}</p>
+        <p><strong>Semester:</strong> ${semester}</p>
+        <p><strong>Branch:</strong> ${branch}</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+        <p><strong>Exam Type:</strong> ${examType}</p>
+        <p><strong>File:</strong> <a href="${fileUrl}" target="_blank">View File</a></p>
+        <p>
+          <a href="${approveLink}" style="padding:10px 15px;background:#28a745;color:#fff;text-decoration:none;margin-right:10px;">Approve Paper</a>
+          <a href="${rejectLink}" style="padding:10px 15px;background:#dc3545;color:#fff;text-decoration:none;">Reject Paper</a>
+        </p>
+      `,
+    });
 
     res
       .status(201)
