@@ -99,10 +99,12 @@ const Upload = () => {
 
 
     try {
+      console.log("calling api");
       // Make a POST request to the server with the FormData
-      const response = await axios.post(`https://jntuh-backend.onrender.com/api/upload`, formData, {
+      const response = await axios.post(`${API}/api/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+      console.log("response : "+response.data);
       if (response.status === 201) {
         alert("File uploaded successfully and is pending review");
         // Clear form after successful upload
