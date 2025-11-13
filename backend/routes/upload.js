@@ -1,45 +1,59 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const { storage } = require("../utils/cloudinary");
+const cloudinary = require("cloudinary").v2;
+const streamifier = require("streamifier");
 const sendEmail = require("../utils/sendEmail");
-const upload = multer({ storage });
-
 const File = require("../models/File");
 
-// POST route to upload image and save to DB
+// fetching backend api
+const backendUrl = process.env.BACKEND_URL;
+
+// Cloudinary config
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Use memory storage for Multer
+const upload = multer({ storage: multer.memoryStorage() });
+
+// Upload helper function
+async function uploadToCloudinary(buffer) {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: "uploads",
+        resource_type: "image",
+      },
+      (error, result) => {
+        if (result) resolve(result);
+        else reject(error);
+      }
+    );
+    streamifier.createReadStream(buffer).pipe(stream);
+  });
+}
+
+// Upload Route
 router.post("/", upload.single("file"), async (req, res) => {
   try {
     const { degree, regulation, semester, branch, subject, examType } =
       req.body;
-    console.log("Data from frontend: "+req.body);
-    // Validate required fields
-    if (
-      !req.file ||
-      !degree ||
-      !regulation ||
-      !semester ||
-      !branch ||
-      !subject ||
-      !examType
-    ) {
-      return res
-        .status(400)
-        .json({
-          message: "All fields including subject and image are required",
-        });
-    }
 
-    // Allow only image MIME types
-    const allowedImageTypes = ["image/jpeg", "image/png", "image/webp"];
-    if (!allowedImageTypes.includes(req.file.mimetype)) {
-      return res
-        .status(400)
-        .json({ message: "Only JPG, PNG, or WEBP image files are allowed." });
-    }
+    // Validation
+    if (!req.file)
+      return res.status(400).json({ message: "Image file is required" });
 
-    // Save with status = pending (for manual verification)
-    const fileUrl = req.file.path;
+    if (!degree || !regulation || !semester || !branch || !subject || !examType)
+      return res.status(400).json({ message: "All fields are required" });
+
+    // Upload to Cloudinary
+    const uploaded = await uploadToCloudinary(req.file.buffer);
+    const fileUrl = uploaded.secure_url;
+
+    // Save to DB
     const newFile = new File({
       fileUrl,
       degree,
@@ -47,17 +61,15 @@ router.post("/", upload.single("file"), async (req, res) => {
       semester,
       branch,
       subject,
-      status: "pending",
       examType,
+      status: "pending",
     });
 
     await newFile.save();
 
-    // Send confirmation email to admin
-    const approveLink = `https://jntuh-backend.onrender.com/api/verify/${newFile._id}/approve`;
-    const rejectLink = `https://jntuh-backend.onrender.com/api/verify/${newFile._id}/reject`;
-    // const approveLink = `http://localhost:5000/api/verify/${newFile._id}/approve`;
-    // const rejectLink = `http://localhost:5000/api/verify/${newFile._id}/reject`;
+    // Email notification to Admin
+    const approveLink = `${backendUrl}/api/verify/${newFile._id}/approve`;
+    const rejectLink = `${backendUrl}/api/verify/${newFile._id}/reject`;
 
     await sendEmail({
       to: process.env.ADMIN_EMAIL,
@@ -78,11 +90,12 @@ router.post("/", upload.single("file"), async (req, res) => {
       `,
     });
 
-    res
-      .status(201)
-      .json({ message: "Image uploaded for review", file: newFile });
-  } catch (err) {
-    console.error("Upload Error:", err);
+    res.status(201).json({
+      message: "File uploaded successfully and pending review",
+      file: newFile,
+    });
+  } catch (error) {
+    console.error("Upload Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });

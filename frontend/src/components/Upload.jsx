@@ -20,8 +20,7 @@ const Upload = () => {
 
   const [isUploading, setIsUploading] = useState(false); // New state to track upload process
 
-  const API = "https://jntuh-backend.onrender.com";
-  // const API = "http://localhost:5000";
+   const API = import.meta.env.VITE_BACKEND_URL;
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
@@ -29,7 +28,6 @@ const Upload = () => {
       setSelectedFile(file);
       const fileUrl = URL.createObjectURL(file);
       setPreviewUrl(fileUrl);
-      console.log("Selected file:", file.name);
     } else {
       alert("Please select an image file (JPG, PNG)");
     }
@@ -99,12 +97,10 @@ const Upload = () => {
 
 
     try {
-      console.log("calling api");
       // Make a POST request to the server with the FormData
       const response = await axios.post(`${API}/api/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log("response : "+response.data);
       if (response.status === 201) {
         alert("File uploaded successfully and is pending review");
         // Clear form after successful upload
