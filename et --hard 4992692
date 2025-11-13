@@ -1,0 +1,38 @@
+[33m6875c9d[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Revert "Update server.js"
+[33m12b1e6f[m ll
+[33m11d688f[m cors
+[33m479dbfc[m s
+[33mf965001[m little changes
+[33mc07f03b[m server
+[33mea0db9f[m upload page
+[33md61d572[m added env checker
+[33mab4297e[m added env checker
+[33md7ed323[m Update InfoBar.jsx
+[33m4ad7cc9[m Create README.md
+[33meaf72ae[m Update Upload.jsx
+[33mc43d77d[m Update VerifiedPapers.jsx
+[33mb9db1f1[m Update Upload.jsx
+[33mbb8130b[m Update VerifiedPapers.jsx
+[33m2de0f3c[m Update upload.js
+[33mf17a665[m Update Upload.jsx
+[33m12a6edc[m Update Upload.jsx
+[33m4992692[m Update server.js
+[33mbca8c22[m Update index.html
+[33m5b6084e[m Update server.js
+[33m0d916a6[m Update index.html
+[33mcdaa8e1[m Update index.html
+[33m8b54873[m added new logo
+[33m22d7550[m Update vite.svg
+[33mfe66107[m Update VerifiedPapers.jsx
+[33m724ba44[m Update Upload.jsx
+[33m0897af5[m Update upload.js
+[33mcb48518[m Update server.js
+[33m9541d30[m updated
+[33mac16667[m Update server.js
+[33m6b3ff9b[m Update upload.js
+[33me47a3ae[m Update VerifiedPapers.jsx
+[33m78b9a6e[m Update Upload.jsx
+[33mf9b34da[m Update server.js
+[33m4600282[m Update server.js
+[33m79c66e7[m added env
+[33md6b5940[m Initial commit with frontend and backend folders
