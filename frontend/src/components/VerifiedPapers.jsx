@@ -18,8 +18,9 @@ const VerifiedPapers = () => {
 
   const handleBack = () => navigate("/");
 
-  const API = "https://jntuh-backend.onrender.com";
-  // const API = "http://localhost:5000";
+  const API = import.meta.env.VITE_BACKEND_URL;
+  console.log("API : "+API);
+
 
   useEffect(() => {
     if (degree && regulation && semester && branch && examType) {
@@ -41,15 +42,15 @@ const VerifiedPapers = () => {
           status: "verified",
         },
       });
-      console.log("Response Data:", response.data);
-      console.log("Params Sent:", {
-        degree,
-        regulation,
-        semester,
-        branch,
-        examType,
-        status: "verified",
-      });
+      // console.log("Response Data:", response.data);
+      // console.log("Params Sent:", {
+      //   degree,
+      //   regulation,
+      //   semester,
+      //   branch,
+      //   examType,
+      //   status: "verified",
+      // });
 
       setFiles(response.data);
     } catch (err) {
