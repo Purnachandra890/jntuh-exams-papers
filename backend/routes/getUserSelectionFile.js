@@ -4,7 +4,7 @@ const router = express.Router();
 const File = require("../models/File");
 
 router.get("/", async (req, res) => {
-  console.log("Entered:")
+  // console.log("Entered:")
   try {
     const {
       degree,
@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
       subject,
       examType, 
     } = req.query;
-    console.log(req.query);
+    // console.log(req.query);
     const filter = {};
     if (degree) filter.degree = degree;
     if (regulation) filter.regulation = regulation;

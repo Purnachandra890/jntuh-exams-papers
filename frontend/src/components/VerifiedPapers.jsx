@@ -20,7 +20,7 @@ const VerifiedPapers = () => {
   const handleBack = () => navigate("/");
 
   const API = import.meta.env.VITE_BACKEND_URL;
-  console.log("API : " + API);
+  // console.log("API : " + API);
 
   useEffect(() => {
     if (degree && regulation && semester && branch && examType) {
