@@ -1,148 +1,98 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // Import Axios
+import axios from "axios";
 import "./Upload.css";
 import InfoBar from "./InfoBar";
 
 const Upload = () => {
   const navigate = useNavigate();
-  const fileInputRef = useRef(null);
 
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  // Separate refs for front and back boxes
+  const frontInputRef = useRef(null);
+  const backInputRef = useRef(null);
 
+  // States
   const [degree, setDegree] = useState("");
   const [regulation, setRegulation] = useState("");
   const [semester, setSemester] = useState("");
   const [branch, setBranch] = useState("");
   const [subject, setSubject] = useState("");
-  const [examType, setexamType] = useState(""); // New state
+  const [examType, setExamType] = useState("");
+  const [paperSides, setPaperSides] = useState("");
 
-  const [isUploading, setIsUploading] = useState(false); // New state to track upload process
+  const [frontImage, setFrontImage] = useState(null);
+  const [backImage, setBackImage] = useState(null);
+  const [frontPreview, setFrontPreview] = useState(null);
+  const [backPreview, setBackPreview] = useState(null);
 
-   const API = import.meta.env.VITE_BACKEND_URL;
+  const [isUploading, setIsUploading] = useState(false);
 
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setSelectedFile(file);
-      const fileUrl = URL.createObjectURL(file);
-      setPreviewUrl(fileUrl);
-    } else {
-      alert("Please select an image file (JPG, PNG)");
-    }
+  const API = import.meta.env.VITE_BACKEND_URL;
+
+  const handleBack = () => navigate("/");
+
+  // Drag over
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
   };
 
-  const handleBrowseClick = () => {
-    fileInputRef.current.click();
-  };
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const file = event.dataTransfer.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setSelectedFile(file);
-      const fileUrl = URL.createObjectURL(file);
-      setPreviewUrl(fileUrl);
-      console.log("Dropped file:", file.name);
-    } else {
-      alert("Please drop an image file (JPG, PNG)");
-    }
-  };
-
-  const handleRemoveFile = () => {
-    setSelectedFile(null);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-    }
-  };
-
-  const handleBack = () => {
-    navigate("/");
-  };
-
+  // Submit handler
   const handleUpload = async () => {
-    // Check if all required fields are filled
-    if (
-      !selectedFile ||
-      !degree ||
-      !regulation ||
-      !semester ||
-      !branch ||
-      !subject||
-      !examType
-    ) {
-      alert("All fields including file and subject are required");
-      return;
-    }
-    // Set uploading to true to disable the button
-    setIsUploading(true);
+    if (!paperSides) return alert("Please select paper sides");
+    if (!frontImage) return alert("Front image is required");
+    if (paperSides === "two" && !backImage)
+      return alert("Back image is required");
 
-    // Prepare FormData to send data as multipart/form-data
     const formData = new FormData();
-    formData.append("file", selectedFile);
+
     formData.append("degree", degree);
     formData.append("regulation", regulation);
     formData.append("semester", semester);
     formData.append("branch", branch);
     formData.append("subject", subject);
     formData.append("examType", examType);
+    formData.append("paperSides", paperSides);
 
+    formData.append("front", frontImage);
+    if (paperSides === "two") formData.append("back", backImage);
 
     try {
-      // Make a POST request to the server with the FormData
-      const response = await axios.post(`${API}/api/upload`, formData, {
+      setIsUploading(true);
+
+      const res = await axios.post(`${API}/api/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      if (response.status === 201) {
-        alert("File uploaded successfully and is pending review");
-        // Clear form after successful upload
-        setSelectedFile(null);
-        setPreviewUrl(null);
+
+      if (res.status === 201) {
+        alert("Upload successful! Pending admin review.");
+
+        // Reset form
         setDegree("");
         setRegulation("");
         setSemester("");
         setBranch("");
         setSubject("");
-        setexamType("");
+        setExamType("");
+        setPaperSides("");
 
+        setFrontImage(null);
+        setBackImage(null);
+        setFrontPreview(null);
+        setBackPreview(null);
       }
-    } catch (error) {
-      console.error("Upload Error:", error);
-
-      // Handle different types of errors
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        alert(
-          `Upload failed: ${
-            error.response.data.message || "Server error occurred"
-          }`
-        );
-      } else if (error.request) {
-        // The request was made but no response was received
-        alert(
-          "Upload failed: No response from server. Please check your internet connection."
-        );
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        alert(`Upload failed: ${error.message}`);
-      }
+    } catch (err) {
+      console.error(err);
+      alert("Upload failed, check console.");
     } finally {
-      // Set uploading to false once the upload is complete
       setIsUploading(false);
     }
   };
 
   return (
     <div className="page-container">
+
+      {/* Back Button */}
       <div className="back-button-container">
         <button className="back-button" onClick={handleBack}>
           ← Back
@@ -152,8 +102,9 @@ const Upload = () => {
       <div className="upload-container">
         <h1>Upload Image</h1>
 
-        {/* Dropdown selections */}
+        {/* Dropdown Section */}
         <div className="dropdown-container">
+
           <label>
             <select value={degree} onChange={(e) => setDegree(e.target.value)}>
               <option value="">-- Select Degree --</option>
@@ -180,16 +131,11 @@ const Upload = () => {
               onChange={(e) => setSemester(e.target.value)}
             >
               <option value="">-- Select Semester --</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
             </select>
           </label>
 
@@ -204,20 +150,19 @@ const Upload = () => {
             </select>
           </label>
 
-          <div className="subject-input-container">
-            <label>
-              <input
-                type="text"
-                placeholder="Enter Subject Name"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-              />
-            </label>
-          </div>
+          <label className="subject-input-container">
+            <input
+              type="text"
+              placeholder="Enter Subject Name"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+            />
+          </label>
+
           <label>
             <select
               value={examType}
-              onChange={(e) => setexamType(e.target.value)}
+              onChange={(e) => setExamType(e.target.value)}
             >
               <option value="">-- Select Exam Type --</option>
               <option value="Mid-1">Mid-1</option>
@@ -225,62 +170,240 @@ const Upload = () => {
               <option value="Semester">Semester</option>
             </select>
           </label>
+
+          <label>
+            <select
+              value={paperSides}
+              onChange={(e) => setPaperSides(e.target.value)}
+            >
+              <option value="">-- Exam Paper Sides --</option>
+              <option value="one">One Side</option>
+              <option value="two">Two Sides</option>
+            </select>
+          </label>
         </div>
 
-        {/* Upload Section */}
-        <div className="upload-box">
-          <div
-            className="upload-area"
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-          >
-            {selectedFile ? (
-              <div className="selected-file">
-                {previewUrl && (
-                  <div className="image-preview">
-                    <img src={previewUrl} alt="Preview" />
-                  </div>
-                )}
-                <p>
-                  <span className="check-icon">✓</span>
-                  Selected file: {selectedFile.name}
-                </p>
-                <button className="browse-button" onClick={handleRemoveFile}>
-                  Remove File
-                </button>
-              </div>
-            ) : (
-              <>
-                <p>Drag and drop your photo here</p>
-                <p>or</p>
-                <button className="browse-button" onClick={handleBrowseClick}>
-                  Browse Photos
-                </button>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileSelect}
-                  style={{ display: "none" }}
-                  accept=".jpg,.jpeg,.png"
-                />
-              </>
-            )}
-            <p className="file-types">Supported formats: JPG, PNG</p>
+        {/* One-Side Upload Box */}
+        {paperSides === "one" && (
+          <div className="upload-box">
+            <div
+              className="upload-area"
+              onDragOver={handleDragOver}
+              onDrop={(e) => {
+                const file = e.dataTransfer.files[0];
+                if (file?.type.startsWith("image/")) {
+                  setFrontImage(file);
+                  setFrontPreview(URL.createObjectURL(file));
+                }
+              }}
+            >
+              {frontImage ? (
+                <div className="selected-file">
+                  {frontPreview && (
+                    <div className="image-preview">
+                      <img src={frontPreview} alt="Preview" />
+                    </div>
+                  )}
+                  <p>
+                    <span className="check-icon">✓</span>
+                    {frontImage.name}
+                  </p>
+                  <button
+                    className="browse-button"
+                    onClick={() => {
+                      setFrontImage(null);
+                      setFrontPreview(null);
+                    }}
+                  >
+                    Remove File
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <p>Drag and drop your photo here</p>
+                  <p>or</p>
+                  <button
+                    className="browse-button"
+                    onClick={() => frontInputRef.current.click()}
+                  >
+                    Browse Photos
+                  </button>
+                  <input
+                    type="file"
+                    ref={frontInputRef}
+                    style={{ display: "none" }}
+                    accept="image/*"
+                    onChange={(e) => {
+                      setFrontImage(e.target.files[0]);
+                      setFrontPreview(URL.createObjectURL(e.target.files[0]));
+                    }}
+                  />
+                </>
+              )}
+
+              <p className="file-types">Supported formats: JPG, PNG</p>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* TWO-SIDE Upload Boxes in Horizontal Layout */}
+        {paperSides === "two" && (
+          <div className="two-sides-wrapper">
+
+            {/* FRONT SIDE */}
+            <div className="side-container">
+              <h3>Front Side</h3>
+              <div className="upload-box">
+                <div
+                  className="upload-area"
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => {
+                    const file = e.dataTransfer.files[0];
+                    if (file?.type.startsWith("image/")) {
+                      setFrontImage(file);
+                      setFrontPreview(URL.createObjectURL(file));
+                    }
+                  }}
+                >
+                  {frontImage ? (
+                    <div className="selected-file">
+                      {frontPreview && (
+                        <div className="image-preview">
+                          <img src={frontPreview} alt="Preview" />
+                        </div>
+                      )}
+                      <p>
+                        <span className="check-icon">✓</span>
+                        {frontImage.name}
+                      </p>
+                      <button
+                        className="browse-button"
+                        onClick={() => {
+                          setFrontImage(null);
+                          setFrontPreview(null);
+                        }}
+                      >
+                        Remove File
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <p>Drag and drop your front side here</p>
+                      <p>or</p>
+                      <button
+                        className="browse-button"
+                        onClick={() => frontInputRef.current.click()}
+                      >
+                        Browse Photos
+                      </button>
+                      <input
+                        type="file"
+                        ref={frontInputRef}
+                        style={{ display: "none" }}
+                        accept="image/*"
+                        onChange={(e) => {
+                          setFrontImage(e.target.files[0]);
+                          setFrontPreview(URL.createObjectURL(e.target.files[0]));
+                        }}
+                      />
+                    </>
+                  )}
+
+                  <p className="file-types">Supported formats: JPG, PNG</p>
+                </div>
+              </div>
+            </div>
+
+            {/* BACK SIDE */}
+            <div className="side-container">
+              <h3>Back Side</h3>
+              <div className="upload-box">
+                <div
+                  className="upload-area"
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => {
+                    const file = e.dataTransfer.files[0];
+                    if (file?.type.startsWith("image/")) {
+                      setBackImage(file);
+                      setBackPreview(URL.createObjectURL(file));
+                    }
+                  }}
+                >
+                  {backImage ? (
+                    <div className="selected-file">
+                      {backPreview && (
+                        <div className="image-preview">
+                          <img src={backPreview} alt="Preview" />
+                        </div>
+                      )}
+                      <p>
+                        <span className="check-icon">✓</span>
+                        {backImage.name}
+                      </p>
+                      <button
+                        className="browse-button"
+                        onClick={() => {
+                          setBackImage(null);
+                          setBackPreview(null);
+                        }}
+                      >
+                        Remove File
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <p>Drag and drop your back side here</p>
+                      <p>or</p>
+                      <button
+                        className="browse-button"
+                        onClick={() => backInputRef.current.click()}
+                      >
+                        Browse Photos
+                      </button>
+                      <input
+                        type="file"
+                        ref={backInputRef}
+                        style={{ display: "none" }}
+                        accept="image/*"
+                        onChange={(e) => {
+                          setBackImage(e.target.files[0]);
+                          setBackPreview(URL.createObjectURL(e.target.files[0]));
+                        }}
+                      />
+                    </>
+                  )}
+
+                  <p className="file-types">Supported formats: JPG, PNG</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        )}
+
+        {/* UPLOAD BUTTON (Visible only when everything is selected) */}
+        {degree &&
+          regulation &&
+          semester &&
+          branch &&
+          subject &&
+          examType &&
+          paperSides &&
+          ((paperSides === "one" && frontImage) ||
+            (paperSides === "two" && frontImage && backImage)) && (
+            <div className="upload-paper-button-container">
+              <button
+                className="upload-paper-button"
+                onClick={handleUpload}
+                disabled={isUploading}
+              >
+                {isUploading ? "Uploading..." : "Upload Paper"}
+              </button>
+            </div>
+          )}
+
       </div>
-      {/* Upload Paper Button */}
-      {selectedFile && degree && regulation && semester && branch && subject && examType &&(
-        <div className="upload-paper-button-container">
-          <button
-            className="upload-paper-button"
-            onClick={handleUpload}
-            disabled={isUploading} // Disable button while uploading
-          >
-            {isUploading ? "Uploading..." : "Upload Paper"}
-          </button>
-        </div>
-      )}
+
       <InfoBar />
     </div>
   );
