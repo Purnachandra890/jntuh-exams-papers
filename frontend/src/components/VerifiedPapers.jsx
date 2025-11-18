@@ -15,12 +15,12 @@ const VerifiedPapers = () => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showSlowMessage, setShowSlowMessage] = useState(false);
 
   const handleBack = () => navigate("/");
 
   const API = import.meta.env.VITE_BACKEND_URL;
-  console.log("API : "+API);
-
+  console.log("API : " + API);
 
   useEffect(() => {
     if (degree && regulation && semester && branch && examType) {
@@ -59,6 +59,20 @@ const VerifiedPapers = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    let timer;
+
+    if (loading) {
+      timer = setTimeout(() => {
+        setShowSlowMessage(true);
+      }, 3000); // show after 3 seconds
+    } else {
+      setShowSlowMessage(false); // hide when loading finishes
+    }
+
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   return (
     <div className="page-container">
@@ -132,6 +146,12 @@ const VerifiedPapers = () => {
         </div>
 
         {loading && <p>Loading files...</p>}
+        {loading && showSlowMessage && (
+          <p style={{ color: "#555", marginTop: "8px" }}>
+            If this is your first request, please wait 10 seconds for the server
+            to wake up.
+          </p>
+        )}
         {error && <p className="error-message">{error}</p>}
 
         {!loading && files.length > 0 && (
