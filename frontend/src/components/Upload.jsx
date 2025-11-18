@@ -7,11 +7,11 @@ import InfoBar from "./InfoBar";
 const Upload = () => {
   const navigate = useNavigate();
 
-  // Separate refs for front and back boxes
+  // Refs
   const frontInputRef = useRef(null);
   const backInputRef = useRef(null);
 
-  // States
+  // Dropdown states
   const [degree, setDegree] = useState("");
   const [regulation, setRegulation] = useState("");
   const [semester, setSemester] = useState("");
@@ -20,6 +20,7 @@ const Upload = () => {
   const [examType, setExamType] = useState("");
   const [paperSides, setPaperSides] = useState("");
 
+  // File states
   const [frontImage, setFrontImage] = useState(null);
   const [backImage, setBackImage] = useState(null);
   const [frontPreview, setFrontPreview] = useState(null);
@@ -29,20 +30,15 @@ const Upload = () => {
 
   const API = import.meta.env.VITE_BACKEND_URL;
 
-  const handleBack = () => navigate("/");
-
-  // Drag over
   const handleDragOver = (e) => {
     e.preventDefault();
-    e.stopPropagation();
   };
 
-  // Submit handler
   const handleUpload = async () => {
-    if (!paperSides) return alert("Please select paper sides");
-    if (!frontImage) return alert("Front image is required");
+    if (!paperSides) return alert("Please select paper sides.");
+    if (!frontImage) return alert("Front image required.");
     if (paperSides === "two" && !backImage)
-      return alert("Back image is required");
+      return alert("Back image required.");
 
     const formData = new FormData();
 
@@ -54,6 +50,7 @@ const Upload = () => {
     formData.append("examType", examType);
     formData.append("paperSides", paperSides);
 
+    // Important: Correct names so Multer works
     formData.append("front", frontImage);
     if (paperSides === "two") formData.append("back", backImage);
 
@@ -65,9 +62,9 @@ const Upload = () => {
       });
 
       if (res.status === 201) {
-        alert("Upload successful! Pending admin review.");
+        alert("Upload successful! and is pending review");
 
-        // Reset form
+        // RESET FORM
         setDegree("");
         setRegulation("");
         setSemester("");
@@ -82,8 +79,8 @@ const Upload = () => {
         setBackPreview(null);
       }
     } catch (err) {
-      console.error(err);
-      alert("Upload failed, check console.");
+      console.error("UPLOAD ERROR:", err);
+      alert("Upload failed. Check console.");
     } finally {
       setIsUploading(false);
     }
@@ -91,20 +88,19 @@ const Upload = () => {
 
   return (
     <div className="page-container">
-
       {/* Back Button */}
       <div className="back-button-container">
-        <button className="back-button" onClick={handleBack}>
+        <button className="back-button" onClick={() => navigate("/")}>
           ← Back
         </button>
       </div>
 
+      {/* Main Container */}
       <div className="upload-container">
         <h1>Upload Image</h1>
 
-        {/* Dropdown Section */}
+        {/* Dropdowns */}
         <div className="dropdown-container">
-
           <label>
             <select value={degree} onChange={(e) => setDegree(e.target.value)}>
               <option value="">-- Select Degree --</option>
@@ -132,9 +128,7 @@ const Upload = () => {
             >
               <option value="">-- Select Semester --</option>
               {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
+                <option key={n}>{n}</option>
               ))}
             </select>
           </label>
@@ -142,11 +136,11 @@ const Upload = () => {
           <label>
             <select value={branch} onChange={(e) => setBranch(e.target.value)}>
               <option value="">-- Select Branch --</option>
-              <option value="CSE">CSE</option>
-              <option value="ECE">ECE</option>
-              <option value="EEE">EEE</option>
-              <option value="MECH">MECH</option>
-              <option value="CIVIL">CIVIL</option>
+              <option>CSE</option>
+              <option>ECE</option>
+              <option>EEE</option>
+              <option>MECH</option>
+              <option>CIVIL</option>
             </select>
           </label>
 
@@ -165,9 +159,9 @@ const Upload = () => {
               onChange={(e) => setExamType(e.target.value)}
             >
               <option value="">-- Select Exam Type --</option>
-              <option value="Mid-1">Mid-1</option>
-              <option value="Mid-2">Mid-2</option>
-              <option value="Semester">Semester</option>
+              <option>Mid-1</option>
+              <option>Mid-2</option>
+              <option>Semester</option>
             </select>
           </label>
 
@@ -183,7 +177,7 @@ const Upload = () => {
           </label>
         </div>
 
-        {/* One-Side Upload Box */}
+        {/* ONE-SIDE UPLOAD */}
         {paperSides === "one" && (
           <div className="upload-box">
             <div
@@ -204,10 +198,12 @@ const Upload = () => {
                       <img src={frontPreview} alt="Preview" />
                     </div>
                   )}
+
                   <p>
                     <span className="check-icon">✓</span>
                     {frontImage.name}
                   </p>
+
                   <button
                     className="browse-button"
                     onClick={() => {
@@ -222,14 +218,17 @@ const Upload = () => {
                 <>
                   <p>Drag and drop your photo here</p>
                   <p>or</p>
+
                   <button
                     className="browse-button"
                     onClick={() => frontInputRef.current.click()}
                   >
                     Browse Photos
                   </button>
+
                   <input
                     type="file"
+                    name="front"
                     ref={frontInputRef}
                     style={{ display: "none" }}
                     accept="image/*"
@@ -246,11 +245,11 @@ const Upload = () => {
           </div>
         )}
 
-        {/* TWO-SIDE Upload Boxes in Horizontal Layout */}
+        {/* TWO SIDES — HORIZONTAL LAYOUT */}
         {paperSides === "two" && (
           <div className="two-sides-wrapper">
-
-            {/* FRONT SIDE */}
+            
+            {/* FRONT SIDE BOX */}
             <div className="side-container">
               <h3>Front Side</h3>
               <div className="upload-box">
@@ -272,10 +271,12 @@ const Upload = () => {
                           <img src={frontPreview} alt="Preview" />
                         </div>
                       )}
+
                       <p>
                         <span className="check-icon">✓</span>
                         {frontImage.name}
                       </p>
+
                       <button
                         className="browse-button"
                         onClick={() => {
@@ -288,7 +289,7 @@ const Upload = () => {
                     </div>
                   ) : (
                     <>
-                      <p>Drag and drop your front side here</p>
+                      <p>Drag & drop front side</p>
                       <p>or</p>
                       <button
                         className="browse-button"
@@ -296,8 +297,10 @@ const Upload = () => {
                       >
                         Browse Photos
                       </button>
+
                       <input
                         type="file"
+                        name="front"
                         ref={frontInputRef}
                         style={{ display: "none" }}
                         accept="image/*"
@@ -314,7 +317,7 @@ const Upload = () => {
               </div>
             </div>
 
-            {/* BACK SIDE */}
+            {/* BACK SIDE BOX */}
             <div className="side-container">
               <h3>Back Side</h3>
               <div className="upload-box">
@@ -336,10 +339,12 @@ const Upload = () => {
                           <img src={backPreview} alt="Preview" />
                         </div>
                       )}
+
                       <p>
                         <span className="check-icon">✓</span>
                         {backImage.name}
                       </p>
+
                       <button
                         className="browse-button"
                         onClick={() => {
@@ -352,7 +357,7 @@ const Upload = () => {
                     </div>
                   ) : (
                     <>
-                      <p>Drag and drop your back side here</p>
+                      <p>Drag & drop back side</p>
                       <p>or</p>
                       <button
                         className="browse-button"
@@ -360,8 +365,10 @@ const Upload = () => {
                       >
                         Browse Photos
                       </button>
+
                       <input
                         type="file"
+                        name="back"
                         ref={backInputRef}
                         style={{ display: "none" }}
                         accept="image/*"
@@ -381,7 +388,7 @@ const Upload = () => {
           </div>
         )}
 
-        {/* UPLOAD BUTTON (Visible only when everything is selected) */}
+        {/* Upload Button */}
         {degree &&
           regulation &&
           semester &&
@@ -394,8 +401,8 @@ const Upload = () => {
             <div className="upload-paper-button-container">
               <button
                 className="upload-paper-button"
-                onClick={handleUpload}
                 disabled={isUploading}
+                onClick={handleUpload}
               >
                 {isUploading ? "Uploading..." : "Upload Paper"}
               </button>
