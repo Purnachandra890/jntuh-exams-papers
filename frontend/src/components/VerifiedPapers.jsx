@@ -141,6 +141,7 @@ const VerifiedPapers = () => {
               <option value="Mid-1">Mid-1</option>
               <option value="Mid-2">Mid-2</option>
               <option value="Semester">Semester</option>
+              <option value="Supplementary">Supplementary</option>
             </select>
           </label>
         </div>

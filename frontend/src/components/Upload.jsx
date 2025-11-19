@@ -162,6 +162,7 @@ const Upload = () => {
               <option>Mid-1</option>
               <option>Mid-2</option>
               <option>Semester</option>
+              <option>Supplementary</option>
             </select>
           </label>
 
