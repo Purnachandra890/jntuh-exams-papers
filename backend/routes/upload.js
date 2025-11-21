@@ -54,6 +54,21 @@ router.post("/", upload, async (req, res) => {
     const frontFile = req.files.front?.[0];
     const backFile = req.files.back?.[0];
 
+    // original image sizes
+    // console.log(
+    //   "Front image original size:",
+    //   (frontFile.size / 1024 / 1024).toFixed(2),
+    //   "MB"
+    // );
+
+    if (backFile) {
+      console.log(
+        "Back image original size:",
+        (backFile.size / 1024 / 1024).toFixed(2),
+        "MB"
+      );
+    }
+
     if (!frontFile) {
       return res.status(400).json({ message: "Front image is required" });
     }
@@ -61,18 +76,13 @@ router.post("/", upload, async (req, res) => {
     let finalBuffer;
 
     if (paperSides === "two") {
-      if (!backFile) {
-        return res.status(400).json({ message: "Back image is required" });
-      }
-
-      // Read image metadata
       const img1 = sharp(frontFile.buffer);
       const img2 = sharp(backFile.buffer);
 
       const meta1 = await img1.metadata();
       const meta2 = await img2.metadata();
 
-      // Merge into horizontal single image
+      // Merge into horizontal image
       finalBuffer = await sharp({
         create: {
           width: meta1.width + meta2.width,
@@ -87,8 +97,34 @@ router.post("/", upload, async (req, res) => {
         ])
         .jpeg()
         .toBuffer();
+
+      // console.log(
+      //   "Merged image size (before compression):",
+      //   (finalBuffer.length / 1024 / 1024).toFixed(2),
+      //   "MB"
+      // );
+
+      // 🔥 Compress merged image
+      finalBuffer = await sharp(finalBuffer)
+        .resize({ width: 2000 }) // resize merged output
+        .jpeg({ quality: 75 }) // reduce size
+        .toBuffer();
+      // console.log(
+      //   "Final image size (after compression):",
+      //   (finalBuffer.length / 1024).toFixed(2),
+      //   "KB"
+      // );
     } else {
-      finalBuffer = frontFile.buffer;
+      // ONE-SIDE PAPER
+      finalBuffer = await sharp(frontFile.buffer)
+        .resize({ width: 1500 }) // resize for readability
+        .jpeg({ quality: 70 }) // compress
+        .toBuffer();
+      // console.log(
+      //   "Final image size (after compression):",
+      //   (finalBuffer.length / 1024).toFixed(2),
+      //   "KB"
+      // );
     }
 
     // Upload final merged (or single) image
@@ -112,28 +148,6 @@ router.post("/", upload, async (req, res) => {
     const approveLink = `${backendUrl}/api/verify/${newFile._id}/approve`;
     const rejectLink = `${backendUrl}/api/verify/${newFile._id}/reject`;
 
-    // Send email
-    // await sendEmail({
-    //   to: process.env.ADMIN_EMAIL,
-    //   subject: "New Paper Uploaded - Verification Required",
-    //   html: `
-    //     <h3>New Paper Uploaded</h3>
-    //     <p><strong>Degree:</strong> ${degree}</p>
-    //     <p><strong>Regulation:</strong> ${regulation}</p>
-    //     <p><strong>Semester:</strong> ${semester}</p>
-    //     <p><strong>Branch:</strong> ${branch}</p>
-    //     <p><strong>Subject:</strong> ${subject}</p>
-    //     <p><strong>Exam Type:</strong> ${examType}</p>
-
-    //     <p><a href="${fileUrl}" target="_blank">View Image</a></p>
-
-    //     <p>
-    //       <a href="${approveLink}" style="padding:10px 15px;background:#28a745;color:#fff;text-decoration:none;">Approve</a>
-    //       &nbsp;
-    //       <a href="${rejectLink}" style="padding:10px 15px;background:#dc3545;color:#fff;text-decoration:none;">Reject</a>
-    //     </p>
-    //   `,
-    // });
     await sendEmail({
       to: process.env.ADMIN_EMAIL,
       subject: "New Paper Uploaded - Verification Required",
