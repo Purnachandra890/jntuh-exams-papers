@@ -5,10 +5,13 @@ import Header from './components/Header'
 import InfoBar from './components/InfoBar'
 import Upload from './components/Upload'
 import VerifiedPapers from './components/VerifiedPapers'
+import OnlineUsersBadge from './components/OnlineUsersBadge';
+
 
 function App() {
   return (
     <Router>
+      <OnlineUsersBadge/>
       <Routes>
         {/* Home Page Route with Navbar */}
         <Route path="/" element={
