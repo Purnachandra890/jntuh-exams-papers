@@ -28,7 +28,8 @@ const Upload = () => {
 
   const [isUploading, setIsUploading] = useState(false);
 
-  const API = import.meta.env.VITE_BACKEND_URL;
+  const API_1 = import.meta.env.VITE_BACKEND_URL_1;
+  const API_2 = import.meta.env.VITE_BACKEND_URL_2;
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -41,7 +42,6 @@ const Upload = () => {
       return alert("Back image required.");
 
     const formData = new FormData();
-
     formData.append("degree", degree);
     formData.append("regulation", regulation);
     formData.append("semester", semester);
@@ -50,40 +50,60 @@ const Upload = () => {
     formData.append("examType", examType);
     formData.append("paperSides", paperSides);
 
-    // Important: Correct names so Multer works
     formData.append("front", frontImage);
     if (paperSides === "two") formData.append("back", backImage);
 
     try {
       setIsUploading(true);
 
-      const res = await axios.post(`${API}/api/upload`, formData, {
+      const config = {
         headers: { "Content-Type": "multipart/form-data" },
-      });
+        timeout: 8000, // 8 seconds max per server
+      };
 
-      if (res.status === 201) {
-        alert("Upload successful! and is pending review");
+      try {
+        console.log("Trying Primary Backend...");
+        const res = await axios.post(`${API_1}/api/upload`, formData, config);
 
-        // RESET FORM
-        setDegree("");
-        setRegulation("");
-        setSemester("");
-        setBranch("");
-        setSubject("");
-        setExamType("");
-        setPaperSides("");
-
-        setFrontImage(null);
-        setBackImage(null);
-        setFrontPreview(null);
-        setBackPreview(null);
+        if (res.status === 201) {
+          alert("Upload successful (Pending review)");
+          resetForm();
+          return;
+        }
+      } catch (primaryErr) {
+        console.warn("Primary backend failed, switching to backup...");
       }
-    } catch (err) {
-      console.error("UPLOAD ERROR:", err);
-      alert("Upload failed. Check console.");
+
+      // Try Backup backend
+      try {
+        const res = await axios.post(`${API_2}/api/upload`, formData, config);
+
+        if (res.status === 201) {
+          alert("Upload successful (Pending review)");
+          resetForm();
+        }
+      } catch (backupErr) {
+        console.error("Both backends failed:", backupErr);
+        alert("Both servers are down. Please try again later.");
+      }
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const resetForm = () => {
+    setDegree("");
+    setRegulation("");
+    setSemester("");
+    setBranch("");
+    setSubject("");
+    setExamType("");
+    setPaperSides("");
+
+    setFrontImage(null);
+    setBackImage(null);
+    setFrontPreview(null);
+    setBackPreview(null);
   };
 
   return (
@@ -249,7 +269,6 @@ const Upload = () => {
         {/* TWO SIDES — HORIZONTAL LAYOUT */}
         {paperSides === "two" && (
           <div className="two-sides-wrapper">
-            
             {/* FRONT SIDE BOX */}
             <div className="side-container">
               <h3>Front Side</h3>
@@ -307,7 +326,9 @@ const Upload = () => {
                         accept="image/*"
                         onChange={(e) => {
                           setFrontImage(e.target.files[0]);
-                          setFrontPreview(URL.createObjectURL(e.target.files[0]));
+                          setFrontPreview(
+                            URL.createObjectURL(e.target.files[0])
+                          );
                         }}
                       />
                     </>
@@ -375,7 +396,9 @@ const Upload = () => {
                         accept="image/*"
                         onChange={(e) => {
                           setBackImage(e.target.files[0]);
-                          setBackPreview(URL.createObjectURL(e.target.files[0]));
+                          setBackPreview(
+                            URL.createObjectURL(e.target.files[0])
+                          );
                         }}
                       />
                     </>
@@ -385,7 +408,6 @@ const Upload = () => {
                 </div>
               </div>
             </div>
-
           </div>
         )}
 
@@ -409,7 +431,6 @@ const Upload = () => {
               </button>
             </div>
           )}
-
       </div>
 
       <InfoBar />
