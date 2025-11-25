@@ -156,37 +156,44 @@ router.post("/", upload, async (req, res) => {
       to: process.env.ADMIN_EMAIL,
       subject: "New Paper Uploaded - Verification Required",
       html: `
- <div style="margin-top: 25px; text-align: center;">
-  <p><strong>✅ Approve:</strong></p>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; background: #fafafa;"> 
+        <h2 style="text-align: center; color: #333;">📄 New Exam Paper Uploaded</h2> 
+        <p style="font-size: 15px; color: #444;"> A new exam paper has been uploaded and requires verification. </p> 
+        <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 15px;"> 
+          <p style="margin: 6px 0;"><strong>Degree:</strong> ${degree}</p> 
+          <p style="margin: 6px 0;"><strong>Regulation:</strong> ${regulation}</p> 
+          <p style="margin: 6px 0;"><strong>Semester:</strong> ${semester}</p> 
+          <p style="margin: 6px 0;"><strong>Branch:</strong> ${branch}</p> 
+          <p style="margin: 6px 0;"><strong>Subject:</strong> ${subject}</p> 
+          <p style="margin: 6px 0;"><strong>Exam Type:</strong> ${examType}</p> 
+      </div>
+      <div style="margin-top: 25px; text-align: center;">
+          <p><strong>✅ Approve:</strong></p>
+          <a href="${approveLink1}"
+            style="padding: 10px 18px; background: #28a745; color: white;
+                    text-decoration: none; border-radius: 6px; margin-right: 10px;">
+            Approve (Server 1)
+          </a>
+          <a href="${approveLink2}"
+            style="padding: 10px 18px; background: #198754; color: white;
+                    text-decoration: none; border-radius: 6px;">
+            Approve (Server 2)
+          </a>
+      </div>
 
-  <a href="${approveLink1}"
-     style="padding: 10px 18px; background: #28a745; color: white;
-            text-decoration: none; border-radius: 6px; margin-right: 10px;">
-    Approve (Server 1)
-  </a>
-
-  <a href="${approveLink2}"
-     style="padding: 10px 18px; background: #198754; color: white;
-            text-decoration: none; border-radius: 6px;">
-    Approve (Server 2)
-  </a>
-</div>
-
-<div style="margin-top: 20px; text-align: center;">
-  <p><strong>❌ Reject:</strong></p>
-
-  <a href="${rejectLink1}"
-     style="padding: 10px 18px; background: #dc3545; color: white;
-            text-decoration: none; border-radius: 6px; margin-right: 10px;">
-    Reject (Server 1)
-  </a>
-
-  <a href="${rejectLink2}"
-     style="padding: 10px 18px; background: #bb2d3b; color: white;
-            text-decoration: none; border-radius: 6px;">
-    Reject (Server 2)
-  </a>
-</div>
+        <div style="margin-top: 20px; text-align: center;">
+            <p><strong>❌ Reject:</strong></p>
+            <a href="${rejectLink1}"
+              style="padding: 10px 18px; background: #dc3545; color: white;
+                      text-decoration: none; border-radius: 6px; margin-right: 10px;">
+              Reject (Server 1)
+            </a>
+            <a href="${rejectLink2}"
+              style="padding: 10px 18px; background: #bb2d3b; color: white;
+                      text-decoration: none; border-radius: 6px;">
+              Reject (Server 2)
+            </a>
+        </div>
   `,
     });
 
