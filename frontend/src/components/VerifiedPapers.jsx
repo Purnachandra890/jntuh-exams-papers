@@ -21,6 +21,8 @@ const VerifiedPapers = () => {
 
   const API = import.meta.env.VITE_BACKEND_URL;
   // console.log("API : " + API);
+  const API_1 = import.meta.env.VITE_BACKEND_URL_1;
+  const API_2 = import.meta.env.VITE_BACKEND_URL_2;
 
   useEffect(() => {
     if (degree && regulation && semester && branch && examType) {
@@ -28,33 +30,67 @@ const VerifiedPapers = () => {
     }
   }, [degree, regulation, semester, branch, examType]);
 
+  // const fetchFiles = async () => {
+  //   try {
+  //     setLoading(true);
+  //     setError("");
+  //     const response = await axios.get(`${API}/api/getfile`, {
+  //       params: {
+  //         degree,
+  //         regulation,
+  //         semester,
+  //         branch,
+  //         examType,
+  //         status: "verified",
+  //       },
+  //     });
+  //     // console.log("Response Data:", response.data);
+  //     // console.log("Params Sent:", {
+  //     //   degree,
+  //     //   regulation,
+  //     //   semester,
+  //     //   branch,
+  //     //   examType,
+  //     //   status: "verified",
+  //     // });
+
+  //     setFiles(response.data);
+  //   } catch (err) {
+  //     setError("Failed to fetch files. Please try again.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const fetchFiles = async () => {
     try {
       setLoading(true);
       setError("");
-      const response = await axios.get(`${API}/api/getfile`, {
-        params: {
-          degree,
-          regulation,
-          semester,
-          branch,
-          examType,
-          status: "verified",
-        },
-      });
-      // console.log("Response Data:", response.data);
-      // console.log("Params Sent:", {
-      //   degree,
-      //   regulation,
-      //   semester,
-      //   branch,
-      //   examType,
-      //   status: "verified",
-      // });
 
-      setFiles(response.data);
-    } catch (err) {
-      setError("Failed to fetch files. Please try again.");
+      const params = {
+        degree,
+        regulation,
+        semester,
+        branch,
+        examType,
+        status: "verified",
+      };
+
+      try {
+        // Try FIRST backend
+        const response = await axios.get(`${API_1}/api/getfile`, { params });
+        setFiles(response.data);
+        return; // success, stop here
+      } catch (error1) {
+        console.warn("Primary backend failed, trying backup...");
+
+        // Try SECOND backend
+        const response = await axios.get(`${API_2}/api/getfile`, { params });
+        setFiles(response.data);
+      }
+    } catch (finalError) {
+      console.error("Both backends failed:", finalError);
+      setError("Both servers are down. Please try again later.");
     } finally {
       setLoading(false);
     }
