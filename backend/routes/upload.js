@@ -7,7 +7,8 @@ const sharp = require("sharp");
 const sendEmail = require("../utils/sendEmail");
 const File = require("../models/File");
 
-const backendUrl = process.env.BACKEND_URL;
+const backendUrl1 = process.env.BACKEND_URL_1;
+const backendUrl2 = process.env.BACKEND_URL_2;
 
 // Cloudinary config
 cloudinary.config({
@@ -145,60 +146,47 @@ router.post("/", upload, async (req, res) => {
     });
 
     // Email links
-    const approveLink = `${backendUrl}/api/verify/${newFile._id}/approve`;
-    const rejectLink = `${backendUrl}/api/verify/${newFile._id}/reject`;
+    const approveLink1 = `${backendUrl1}/api/verify/${newFile._id}/approve`;
+    const rejectLink1 = `${backendUrl1}/api/verify/${newFile._id}/reject`;
+
+    const approveLink2 = `${backendUrl2}/api/verify/${newFile._id}/approve`;
+    const rejectLink2 = `${backendUrl2}/api/verify/${newFile._id}/reject`;
 
     await sendEmail({
       to: process.env.ADMIN_EMAIL,
       subject: "New Paper Uploaded - Verification Required",
       html: `
-  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; 
-              border: 1px solid #e0e0e0; border-radius: 10px; background: #fafafa;">
-    
-    <h2 style="text-align: center; color: #333;">📄 New Exam Paper Uploaded</h2>
+ <div style="margin-top: 25px; text-align: center;">
+  <p><strong>✅ Approve:</strong></p>
 
-    <p style="font-size: 15px; color: #444;">
-      A new exam paper has been uploaded and requires verification.
-    </p>
+  <a href="${approveLink1}"
+     style="padding: 10px 18px; background: #28a745; color: white;
+            text-decoration: none; border-radius: 6px; margin-right: 10px;">
+    Approve (Server 1)
+  </a>
 
-    <div style="background: white; padding: 15px; border-radius: 8px; 
-                border: 1px solid #ddd; margin-top: 15px;">
-      <p style="margin: 6px 0;"><strong>Degree:</strong> ${degree}</p>
-      <p style="margin: 6px 0;"><strong>Regulation:</strong> ${regulation}</p>
-      <p style="margin: 6px 0;"><strong>Semester:</strong> ${semester}</p>
-      <p style="margin: 6px 0;"><strong>Branch:</strong> ${branch}</p>
-      <p style="margin: 6px 0;"><strong>Subject:</strong> ${subject}</p>
-      <p style="margin: 6px 0;"><strong>Exam Type:</strong> ${examType}</p>
-    </div>
+  <a href="${approveLink2}"
+     style="padding: 10px 18px; background: #198754; color: white;
+            text-decoration: none; border-radius: 6px;">
+    Approve (Server 2)
+  </a>
+</div>
 
-    <div style="margin-top: 20px; text-align: center;">
-      <a href="${fileUrl}"
-         style="display: inline-block; margin-top: 10px; padding: 10px 20px;
-                background: #007bff; color: white; text-decoration: none; 
-                border-radius: 6px;">
-        📎 View Uploaded Paper
-      </a>
-    </div>
+<div style="margin-top: 20px; text-align: center;">
+  <p><strong>❌ Reject:</strong></p>
 
-    <div style="margin-top: 25px; text-align: center;">
-      <a href="${approveLink}"
-         style="padding: 10px 20px; background: #28a745; color: white;
-                text-decoration: none; border-radius: 6px; margin-right: 10px;">
-        ✅ Approve Paper
-      </a>
+  <a href="${rejectLink1}"
+     style="padding: 10px 18px; background: #dc3545; color: white;
+            text-decoration: none; border-radius: 6px; margin-right: 10px;">
+    Reject (Server 1)
+  </a>
 
-      <a href="${rejectLink}"
-         style="padding: 10px 20px; background: #dc3545; color: white;
-                text-decoration: none; border-radius: 6px;">
-        ❌ Reject Paper
-      </a>
-    </div>
-
-    <p style="font-size: 13px; color: #777; text-align: center; margin-top: 25px;">
-      This email was generated automatically. Please verify the paper for accuracy.
-    </p>
-
-  </div>
+  <a href="${rejectLink2}"
+     style="padding: 10px 18px; background: #bb2d3b; color: white;
+            text-decoration: none; border-radius: 6px;">
+    Reject (Server 2)
+  </a>
+</div>
   `,
     });
 
