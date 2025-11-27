@@ -12,7 +12,7 @@ export default function OnlineUsersBadge() {
     let socket;
 
     const connectSocket = () => {
-      console.log("Connecting to primary socket...");
+      // console.log("Connecting to primary socket...");
       socket = io(SOCKET_URL_1, {
         transports: ["websocket"],
         timeout: 5000,
