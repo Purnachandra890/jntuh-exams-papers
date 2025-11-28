@@ -47,7 +47,25 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* Button container */
+.buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row; /* desktop = horizontal */
+  gap: 20px; /* space between buttons */
+}
+
+/* Hide verified on desktop */
+.verified-button {
+  display: none;
+}
 @media screen and (max-width: 768px) {
+  .upload-button,
+  .verified-button {
+    width: 100%; /* ✅ full width on mobile */
+    max-width: 300px; /* ✅ not too big */
+  }
   .header {
     margin-top: 100px; /* Increased space for mobile */
     padding: 1.5rem;
@@ -65,8 +83,43 @@
     margin-bottom: 2.5rem;
   }
 
-  .upload-button {
+  .upload-button,
+  .verified-button {
     padding: 0.8rem 2rem;
     font-size: 1.1rem;
   }
-} 
+
+  .verified-button {
+    background-color: white;
+    color: #333;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .verified-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .verified-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .verified-button {
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+  }
+  .buttons {
+    flex-direction: column; /* ✅ vertical buttons */
+    gap: 15px; /* ✅ spacing */
+  }
+}
