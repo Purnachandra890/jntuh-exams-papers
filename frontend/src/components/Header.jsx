@@ -10,9 +10,14 @@ const Header = () => {
         No login required. Help students by sharing question papers. Our admin
         verifies each submission via email!
       </p>
-      <Link to="/upload" className="upload-button">
-        Upload Now
-      </Link>
+      <div className="buttons">
+        <Link to="/upload" className="upload-button">
+          Upload Now
+        </Link>
+        <Link to="/verified-papers" className="verified-button">
+          Verified Papers
+        </Link>
+      </div>
     </div>
   );
 };
