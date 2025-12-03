@@ -12,6 +12,12 @@
   padding: 10px;
 }
 
+@media (max-width:768px) {
+  .back-button-container{
+    display: none;
+  }
+}
+
 .back-button {
   background: none;
   border: none;
@@ -143,3 +149,41 @@
   margin-top: 10px;
 }
 
+
+
+
+.file-card {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.dropdown-container {
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.file-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.file-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.paper-count {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a5f1a;
+  margin-top: 10px;
+  text-align: center;
+}

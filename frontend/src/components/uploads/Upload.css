@@ -14,13 +14,13 @@
   align-items: center;
   flex: 1; /* Ensures that the container expands to fill available space */
   overflow-y: auto;
-  margin-top: 20px; /* Adjusts margin from top */
+  margin-top: 0px; /* Adjusts margin from top */
 }
 
 .upload-container h1 {
   color: #333;
   font-size: 2rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0rem;
 }
 
 .upload-box {
@@ -116,7 +116,7 @@
   font-weight: bold;
 }
 
-@media screen and (max-width: 768px) {
+/* @media screen and (max-width: 768px) {
   .upload-container {
     padding: 0.5rem 1rem;
     margin-top: 80px;
@@ -137,6 +137,75 @@
   .image-preview {
     width: 120px;
     height: 120px;
+  }
+} */
+/* ====== Mobile styles (replace any existing @media (max-width:768px) blocks) ====== */
+@media screen and (max-width: 768px) {
+  /* container spacing */
+  .upload-container {
+    padding: 0.6rem 1rem;
+    margin-top: 8px;       /* small top gap so header isn't stuck to nav */
+    padding-top: 6px;      /* keep a tiny breathing room */
+  }
+
+  /* heading size and spacing */
+  .upload-container h1 {
+    font-size: 1.5rem;     /* compact title on mobile */
+    margin: 0 0 0.6rem 0;  /* top 0, bottom 0.6rem */
+    line-height: 1.1;
+    text-align: center;
+  }
+
+  /* upload box smaller padding so it doesn't push things down */
+  .upload-box {
+    padding: 1rem;
+    margin-top: 6px;       /* small gap between dropdowns and upload box */
+    max-width: 520px;
+  }
+
+  /* upload area slightly tighter */
+  .upload-area {
+    padding: 1.6rem 1rem;
+  }
+
+  /* image preview slightly smaller */
+  .image-preview {
+    width: 110px;
+    height: 110px;
+  }
+
+  /* dropdowns: stack vertically, tighten gaps */
+  .dropdown-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;           /* less vertical space between selects */
+    margin-top: 0.25rem;   /* tiny top spacing under the heading */
+    margin-bottom: 0.6rem; /* small bottom spacing */
+    padding: 0 4px;        /* a bit of side padding for narrow screens */
+  }
+
+  .dropdown-container label {
+    font-size: 0.95rem;
+  }
+
+  .dropdown-container select,
+  .subject-input-container input {
+    min-width: 0;          /* allow full width in column layout */
+    width: 100%;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.95rem;
+    margin-top: 0.35rem;
+  }
+
+  /* action buttons spacing */
+  .upload-paper-button-container {
+    margin-top: 0.9rem;
+    padding-bottom: 1.2rem; /* keep InfoBar visible and not overlap */
+  }
+
+  /* keep back button hidden on mobile if you removed it earlier */
+  .back-button-container {
+    display: none !important;
   }
 }
 
@@ -177,8 +246,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  /* margin-bottom: 2rem; */
 }
 
 .dropdown-container label {
@@ -266,3 +334,22 @@
     align-items: center;
   }
 }
+
+
+
+.upload-box {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.upload-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.browse-button {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.browse-button:hover {
+  transform: translateY(-2px);
+}
+

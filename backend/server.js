@@ -67,6 +67,7 @@ const uploadRoute = require("./routes/upload");
 const getuserSelectionFile = require("./routes/getUserSelectionFile");
 const verifyFileRoute = require("./routes/verifyFile");
 const deleteFileRoute = require("./routes/deleteFile");
+const recentPapers=require("./routes/recentPapers");
 const { Socket } = require("dgram");
 
 app.use("/api/files", getfiles);
@@ -74,6 +75,7 @@ app.use("/api/upload", uploadRoute);
 app.use("/api/getfile", getuserSelectionFile);
 app.use("/api/verify", verifyFileRoute);
 app.use("/api/deletefile", deleteFileRoute);
+app.use("/api/recent",recentPapers);
 
 // Connect to MongoDB and start server…
 mongoose
