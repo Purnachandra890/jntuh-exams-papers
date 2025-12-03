@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Header from "./components/Header";
 import InfoBar from "./components/InfoBar";
-import Upload from "./components/Upload";
-import VerifiedPapers from "./components/VerifiedPapers";
+import Upload from "./components/uploads/Upload";
+import VerifiedPapers from "./components/verified/VerifiedPapers";
 import OnlineUsersBadge from "./components/OnlineUsersBadge";
 
 function App() {
