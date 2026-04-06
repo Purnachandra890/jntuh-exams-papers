@@ -2,13 +2,12 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Upload.css";
-import InfoBar from "../InfoBar";
+import Navbar from "../Navbar";
 import DropdownSection from "./DropdownSection";
 import UploadOneSide from "./UploadOneSide";
 import UploadTwoSides from "./UploadTwoSides";
 import UploadButton from "./UploadButton";
-import BackButton from "../common/BackButton";
-import TitleSection from "../common/TitleSection";
+import Footer from "../landing/Footer";
 
 const Upload = () => {
   const navigate = useNavigate();
@@ -37,12 +36,6 @@ const Upload = () => {
   const API_1 = import.meta.env.VITE_BACKEND_URL_1;
   const API_2 = import.meta.env.VITE_BACKEND_URL_2;
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
-  const handleBack = () => navigate("/");
-
   const handleUpload = async () => {
     if (!paperSides) return alert("Please select paper sides.");
     if (!frontImage) return alert("Front image required.");
@@ -66,7 +59,7 @@ const Upload = () => {
 
       const config = {
         headers: { "Content-Type": "multipart/form-data" },
-        timeout: 8000, // 8 seconds max per server
+        timeout: 8000, 
       };
 
       try {
@@ -115,77 +108,92 @@ const Upload = () => {
   };
 
   return (
-    <div className="page-container">
-      {/* Back Button */}
-      <BackButton onClick={handleBack} />
-      <TitleSection title="Upload Image" />
+    <div className="upload-page-container">
+      <Navbar />
+      
+      <div className="container">
+        <div className="upload-header">
+          <h1>Upload Paper</h1>
+          <p>Help the community by sharing verified exam papers.</p>
+        </div>
 
-      {/* Main Container */}
-      <div className="upload-container">
-        {/* Dropdowns */}
-        <DropdownSection
-          degree={degree}
-          setDegree={setDegree}
-          regulation={regulation}
-          setRegulation={setRegulation}
-          semester={semester}
-          setSemester={setSemester}
-          branch={branch}
-          setBranch={setBranch}
-          subject={subject}
-          setSubject={setSubject}
-          examType={examType}
-          setExamType={setExamType}
-          paperSides={paperSides}
-          setPaperSides={setPaperSides}
-        />
-
-        {/* ONE-SIDE UPLOAD */}
-        {paperSides === "one" && (
-          <UploadOneSide
-            frontImage={frontImage}
-            setFrontImage={setFrontImage}
-            frontPreview={frontPreview}
-            setFrontPreview={setFrontPreview}
-            frontInputRef={frontInputRef}
+        {/* Paper Details Card */}
+        <div className="upload-card">
+          <h2 className="upload-card-title">1. Paper Details</h2>
+          <DropdownSection
+            degree={degree}
+            setDegree={setDegree}
+            regulation={regulation}
+            setRegulation={setRegulation}
+            semester={semester}
+            setSemester={setSemester}
+            branch={branch}
+            setBranch={setBranch}
+            subject={subject}
+            setSubject={setSubject}
+            examType={examType}
+            setExamType={setExamType}
+            paperSides={paperSides}
+            setPaperSides={setPaperSides}
           />
+        </div>
+
+        {/* Upload Action Card */}
+        {paperSides && (
+          <div className="upload-card">
+            <h2 className="upload-card-title">2. Upload Images</h2>
+            <div className="file-upload-section">
+              {/* ONE-SIDE UPLOAD */}
+              {paperSides === "one" && (
+                <UploadOneSide
+                  frontImage={frontImage}
+                  setFrontImage={setFrontImage}
+                  frontPreview={frontPreview}
+                  setFrontPreview={setFrontPreview}
+                  frontInputRef={frontInputRef}
+                />
+              )}
+
+              {/* TWO SIDES UPLOAD */}
+              {paperSides === "two" && (
+                <UploadTwoSides
+                  frontImage={frontImage}
+                  setFrontImage={setFrontImage}
+                  frontPreview={frontPreview}
+                  setFrontPreview={setFrontPreview}
+                  frontInputRef={frontInputRef}
+                  backImage={backImage}
+                  setBackImage={setBackImage}
+                  backPreview={backPreview}
+                  setBackPreview={setBackPreview}
+                  backInputRef={backInputRef}
+                />
+              )}
+            </div>
+          </div>
         )}
 
-        {/* TWO SIDES — HORIZONTAL LAYOUT */}
-        {paperSides === "two" && (
-          <UploadTwoSides
-            frontImage={frontImage}
-            setFrontImage={setFrontImage}
-            frontPreview={frontPreview}
-            setFrontPreview={setFrontPreview}
-            frontInputRef={frontInputRef}
-            backImage={backImage}
-            setBackImage={setBackImage}
-            backPreview={backPreview}
-            setBackPreview={setBackPreview}
-            backInputRef={backInputRef}
+        {/* CTA Section */}
+        <div className="upload-action-container">
+          <UploadButton
+            canUpload={
+              degree &&
+              regulation &&
+              semester &&
+              branch &&
+              subject &&
+              examType &&
+              paperSides &&
+              ((paperSides === "one" && frontImage) ||
+                (paperSides === "two" && frontImage && backImage))
+            }
+            isUploading={isUploading}
+            handleUpload={handleUpload}
           />
-        )}
-
-        {/* Upload Button */}
-        <UploadButton
-          canUpload={
-            degree &&
-            regulation &&
-            semester &&
-            branch &&
-            subject &&
-            examType &&
-            paperSides &&
-            ((paperSides === "one" && frontImage) ||
-              (paperSides === "two" && frontImage && backImage))
-          }
-          isUploading={isUploading}
-          handleUpload={handleUpload}
-        />
+        </div>
       </div>
-
-      <InfoBar />
+      
+      <Footer />
     </div>
   );
 };

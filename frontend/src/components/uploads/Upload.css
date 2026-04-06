@@ -1,96 +1,206 @@
-.page-container {
+/* Upload Page Specific Layout & Variables */
+.upload-page-container {
   min-height: 100vh;
-  width: 100%;
-  position: relative;
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column; 
+  padding-top: 8.5rem; /* Navbar offset + gap */
+  padding-bottom: 5rem;
+  background-color: var(--color-bg-alt);
 }
 
-.upload-container {
-  padding: 0.5rem 2rem;
+.upload-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.upload-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.upload-header p {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+}
+
+/* Card Containers */
+.upload-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.upload-card-title {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.75rem;
+  color: var(--color-text);
+}
+
+/* Dropdown Grid */
+.dropdown-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.dropdown-container label {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  flex: 1; /* Ensures that the container expands to fill available space */
-  overflow-y: auto;
-  margin-top: 0px; /* Adjusts margin from top */
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
 }
 
-.upload-container h1 {
-  color: #333;
-  font-size: 2rem;
-  margin-bottom: 0rem;
+.dropdown-container select,
+.dropdown-container input {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-alt);
+  color: var(--color-text);
+  font-size: 1rem;
+  transition: var(--transition);
+  outline: none;
+}
+
+.dropdown-container select:focus,
+.dropdown-container input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+  background-color: white;
+}
+
+.subject-input-container {
+  grid-column: span 2;
+}
+
+@media (max-width: 600px) {
+  .dropdown-container {
+    grid-template-columns: 1fr;
+  }
+  .subject-input-container {
+    grid-column: span 1;
+  }
+  .upload-card {
+    padding: 1.5rem;
+    margin: 0 1rem 1.5rem 1rem;
+  }
+}
+
+/* Upload Box UI */
+.file-upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.two-sides-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .two-sides-wrapper {
+    grid-template-columns: 1fr;
+  }
 }
 
 .upload-box {
   width: 100%;
-  max-width: 600px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  margin-top: 0;
+}
+
+.upload-box h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: var(--color-text);
 }
 
 .upload-area {
-  border: 2px dashed #b0dbb2;
-  border-radius: 8px;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
   padding: 3rem 2rem;
   text-align: center;
+  background-color: var(--color-bg-alt);
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.upload-area:hover {
-  border-color: #1a5f1a;
-  background-color: #f8f8f8;
-}
-
-.upload-area p {
-  color: #666;
-  margin: 0.5rem 0;
-}
-
-.browse-button {
-  background-color: #b0dbb2;
-  color: #333;
-  border: none;
-  padding: 0.8rem 2rem;
-  font-size: 1.1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 0.5rem; 
-  transition: all 0.3s ease;
-}
-
-.browse-button:hover {
-  background-color: #1a5f1a;
-  color: white;
-  transform: translateY(-2px);
-}
-
-.file-types {
-  font-size: 0.9rem;
-  color: #888;
-  margin-top: 1rem;
-}
-
-.selected-file {
-  padding: 1rem;
+  transition: var(--transition);
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
+  justify-content: center;
+  min-height: 250px;
+}
+
+.upload-area:hover,
+.upload-area.drag-active {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.upload-icon {
+  width: 48px;
+  height: 48px;
+  fill: var(--color-text-muted);
+  margin-bottom: 1rem;
+  transition: fill 0.3s ease;
+}
+
+.upload-area:hover .upload-icon {
+  fill: var(--color-primary);
+}
+
+.upload-area p {
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.browse-button {
+  background-color: white;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 500;
+  transition: var(--transition);
+  margin-top: 1rem;
+}
+
+.browse-button:hover {
+  background-color: var(--color-bg-alt);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.file-types {
+  font-size: 0.8rem !important;
+  margin-top: 1rem;
+}
+
+/* Selected File Preview */
+.selected-file {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .image-preview {
-  margin-bottom: 1rem;
-  width: 150px;
-  height: 150px;
-  border-radius: 8px;
+  width: 100%;
+  height: 200px;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
 }
 
 .image-preview img {
@@ -99,257 +209,35 @@
   object-fit: cover;
 }
 
-.selected-file p {
-  font-size: 1.1rem;
-  color: #1a5f1a;
-  margin-bottom: 1rem;
-  font-weight: 500;
+.file-name {
+  font-weight: 600;
+  color: var(--color-primary);
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  justify-content: center;
 }
 
 .check-icon {
-  color: #1a5f1a;
-  font-size: 1.2rem;
   font-weight: bold;
 }
 
-/* @media screen and (max-width: 768px) {
-  .upload-container {
-    padding: 0.5rem 1rem;
-    margin-top: 80px;
-  }
-
-  .upload-container h1 {
-    font-size: 1.5rem;
-  }
-
-  .upload-box {
-    padding: 1rem;
-  }
-
-  .upload-area {
-    padding: 2rem 1rem;
-  }
-
-  .image-preview {
-    width: 120px;
-    height: 120px;
-  }
-} */
-/* ====== Mobile styles (replace any existing @media (max-width:768px) blocks) ====== */
-@media screen and (max-width: 768px) {
-  /* container spacing */
-  .upload-container {
-    padding: 0.6rem 1rem;
-    margin-top: 8px;       /* small top gap so header isn't stuck to nav */
-    padding-top: 6px;      /* keep a tiny breathing room */
-  }
-
-  /* heading size and spacing */
-  .upload-container h1 {
-    font-size: 1.5rem;     /* compact title on mobile */
-    margin: 0 0 0.6rem 0;  /* top 0, bottom 0.6rem */
-    line-height: 1.1;
-    text-align: center;
-  }
-
-  /* upload box smaller padding so it doesn't push things down */
-  .upload-box {
-    padding: 1rem;
-    margin-top: 6px;       /* small gap between dropdowns and upload box */
-    max-width: 520px;
-  }
-
-  /* upload area slightly tighter */
-  .upload-area {
-    padding: 1.6rem 1rem;
-  }
-
-  /* image preview slightly smaller */
-  .image-preview {
-    width: 110px;
-    height: 110px;
-  }
-
-  /* dropdowns: stack vertically, tighten gaps */
-  .dropdown-container {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.6rem;           /* less vertical space between selects */
-    margin-top: 0.25rem;   /* tiny top spacing under the heading */
-    margin-bottom: 0.6rem; /* small bottom spacing */
-    padding: 0 4px;        /* a bit of side padding for narrow screens */
-  }
-
-  .dropdown-container label {
-    font-size: 0.95rem;
-  }
-
-  .dropdown-container select,
-  .subject-input-container input {
-    min-width: 0;          /* allow full width in column layout */
-    width: 100%;
-    padding: 0.45rem 0.9rem;
-    font-size: 0.95rem;
-    margin-top: 0.35rem;
-  }
-
-  /* action buttons spacing */
-  .upload-paper-button-container {
-    margin-top: 0.9rem;
-    padding-bottom: 1.2rem; /* keep InfoBar visible and not overlap */
-  }
-
-  /* keep back button hidden on mobile if you removed it earlier */
-  .back-button-container {
-    display: none !important;
-  }
-}
-
-.back-button-container {
-  padding: 1rem 2rem;
-  position: sticky;
-  top: 0;
-  background-color: white;
-  z-index: 10;
-}
-
-.back-button {
-  background-color: transparent;
-  border: none;
-  color: #1a5f1a;
-  font-size: 1.2rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.back-button:hover {
-  color: #0d3d0d;
-}
-
-/* Fixed footer at the bottom */
-.InfoBar {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #f8f8f8;
-  padding: 10px;
-  border-top: 1px solid #ccc;
+/* Action Section */
+.upload-action-container {
   text-align: center;
-  z-index: 100;
-}
-.dropdown-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  /* margin-bottom: 2rem; */
+  margin-top: 2rem;
+  margin-bottom: 3rem;
 }
 
-.dropdown-container label {
-  display: flex;
-  flex-direction: column;
-  font-weight: 500;
-  color: #333;
-  font-size: 1rem;
-}
-
-.dropdown-container select {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-top: 0.5rem;
-  background-color: white;
-  color: #333;
-  transition: border-color 0.3s ease;
-  min-width: 150px;
-}
-
-.dropdown-container select:focus {
-  outline: none;
-  border-color: #1a5f1a;
-  box-shadow: 0 0 5px rgba(26, 95, 26, 0.4);
-}
-
-.dropdown-container select:hover {
-  border-color: #1a5f1a;
-}
-@media screen and (max-width: 768px) {
-  .dropdown-container {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
-}
-.upload-paper-button {
-  background-color: #1a5f1a;
-  color: white;
-  border: none;
-  padding: 0.9rem 2rem;
-  font-size: 1.1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.upload-paper-button:hover {
-  background-color: #144c14;
-}
-.upload-paper-button-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 1.5rem;
-}
-.subject-input-container input {
-  padding: 8px;
-  margin-top: 10px;
+.btn-large {
+  font-size: 1.25rem;
+  padding: 1rem 3rem;
   width: 100%;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-.two-sides-wrapper {
-  display: flex;
-  gap: 2rem;
-  justify-content: center;
-  align-items: flex-start;
-  width: 100%;
-  margin-top: 20px;
+  max-width: 400px;
 }
 
-.side-container {
-  flex: 1;
-  max-width: 600px; /* same width as upload-box */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.btn-large:disabled {
+  background-color: var(--color-text-muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
-@media screen and (max-width: 900px) {
-  .two-sides-wrapper {
-    flex-direction: column;
-    align-items: center;
-  }
-}
-
-
-
-.upload-box {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.upload-box:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-.browse-button {
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.browse-button:hover {
-  transform: translateY(-2px);
-}
-
