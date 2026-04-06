@@ -1,39 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import VerifiedFileCard from "./VerifiedFileCard";
+import ImageModal from "./ImageModal";
 
 const VerifiedFileList = ({ loading, error, showSlowMessage, files, filtersSelected }) => {
-  // Show loading state
+  const [selectedFileUrl, setSelectedFileUrl] = useState(null);
+
   if (loading) {
     return (
-      <div style={{ textAlign: "center", marginTop: "20px" }}>
-        <p>Loading files...</p>
+      <div className="status-message">
+        <div className="spinner"></div>
+        <p>Searching for papers...</p>
         {showSlowMessage && (
-          <p style={{ color: "#555", marginTop: "8px" }}>
-            If this is your first request, please wait 10 seconds for the server
-            to wake up.
+          <p className="slow-message">
+            Our free servers might be waking up. Thanks for your patience!
           </p>
         )}
       </div>
     );
   }
 
-  // Show error message
   if (error) {
     return <p className="error-message">{error}</p>;
   }
 
-  // Show empty message
   if (filtersSelected && files.length === 0) {
-    return <p>No files found for the selected criteria.</p>;
+    return (
+      <div className="empty-state">
+        <p>No verified papers found for the selected criteria.</p>
+        <p className="text-muted">Try adjusting your filters or check back later.</p>
+      </div>
+    );
   }
 
-  // Show exam papers
   return (
-    <div className="file-list">
-      {files.map((file) => (
-        <VerifiedFileCard key={file._id} file={file} />
-      ))}
-    </div>
+    <>
+      <div className="file-list-grid">
+        {files.map((file) => (
+          <VerifiedFileCard key={file._id} file={file} onOpenModal={setSelectedFileUrl} />
+        ))}
+      </div>
+
+      <ImageModal 
+        fileUrl={selectedFileUrl} 
+        onClose={() => setSelectedFileUrl(null)} 
+      />
+    </>
   );
 };
 

@@ -1,51 +1,49 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './Navbar.css';
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
-  const toggleMenu = () => setIsMenuOpen(prev => !prev);
-  const isActive = (path) => location.pathname === path;
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Show navbar if scrolling up or at the very top
+      if (currentScrollY < lastScrollY || currentScrollY < 100) {
+        setIsVisible(true);
+      } 
+      // Hide navbar if scrolling down and past the threshold
+      else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
 
-  // configure these
-  const reportEmail = 'purnachandra.n17@gmail.com';
-  const reportSubject = 'Bug Report';
-  const reportBody = 'Hi,\n\nI found a bug in your app.\nplease write here \n\nThanks,\n';
-
-  const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(reportEmail)}&su=${encodeURIComponent(reportSubject)}&body=${encodeURIComponent(reportBody)}`;
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
 
   return (
-    <nav className="navbar">
-      <Link to="/" className="logo">
-        <img src="/logo.png" alt="Logo" className="logo-image" />
-      </Link>
-
-      <button
-        className={`menu-button ${isMenuOpen ? 'active' : ''}`}
-        onClick={toggleMenu}
-        aria-label="Toggle menu"
-      >
-        {isMenuOpen ? '✕' : '☰'}
-      </button>
-
-      <ul className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
-        <li><Link to="/" className={isActive('/') ? 'active-link' : ''} onClick={() => setIsMenuOpen(false)}>Home</Link></li>
-        <li><Link to="/verified-papers" className={isActive('/verified-papers') ? 'active-link' : ''} onClick={() => setIsMenuOpen(false)}>Verified Papers</Link></li>
-        <li>
-          <a
-            href={gmailHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={isActive('/report-bug') ? 'active-link' : ''}
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Report Bug
-          </a>
-        </li>
-        <li><Link to="/" className={isActive('/about') ? 'active-link' : ''} onClick={() => setIsMenuOpen(false)}>About Us</Link></li>
-      </ul>
+    <nav className={`navbar ${isVisible ? '' : 'navbar--hidden'}`}>
+      <div className="navbar-container">
+        <Link to="/" className="navbar-logo">
+          JNTUH <span className="logo-accent">Papers</span>
+        </Link>
+        <div className="navbar-links">
+          <Link to="/" className="nav-link">Home</Link>
+          <Link to="/verified-papers" className="nav-link">Papers</Link>
+          <Link to="/upload" className="nav-link">Upload</Link>
+          <a href="#faq" className="nav-link">FAQ</a>
+        </div>
+        <div className="navbar-actions">
+          <Link to="/upload" className="btn btn-primary nav-upload-btn">
+            Share Paper
+          </Link>
+        </div>
+      </div>
     </nav>
   );
 };

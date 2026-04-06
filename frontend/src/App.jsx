@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Header from "./components/Header";
-import InfoBar from "./components/InfoBar";
+import Landing from "./components/landing/Landing";
 import Upload from "./components/uploads/Upload";
 import VerifiedPapers from "./components/verified/VerifiedPapers";
 import OnlineUsersBadge from "./components/OnlineUsersBadge";
@@ -18,7 +16,7 @@ function App() {
         const text=await res.text();
         console.log(text);
         // console.log("Response from", url, ":", text);
-      } catch {
+      } catch (error) {
         console.error("Server error:", url, error.message);
       }
     };
@@ -30,16 +28,10 @@ function App() {
     <Router>
       <OnlineUsersBadge />
       <Routes>
-        {/* Home Page Route with Navbar */}
+        {/* Home Page Route with Landing Page Components */}
         <Route
           path="/"
-          element={
-            <>
-              <Navbar />
-              <Header />
-              <InfoBar />
-            </>
-          }
+          element={<Landing />}
         />
 
         {/* Upload Page Route without Navbar */}

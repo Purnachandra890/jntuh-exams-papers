@@ -31,9 +31,9 @@ const VerifiedFilters = ({
   }, []);
 
   return (
-    <div className="dropdown-container">
-      {/* degree */}
+    <div className="filters-grid">
       <label>
+        Degree
         <select
           value={degree}
           onChange={(e) => {
@@ -47,8 +47,8 @@ const VerifiedFilters = ({
         </select>
       </label>
 
-      {/* regulation */}
       <label>
+        Regulation
         <select
           value={regulation}
           onChange={(e) => {
@@ -63,8 +63,8 @@ const VerifiedFilters = ({
         </select>
       </label>
 
-      {/* semester */}
       <label>
+        Semester
         <select
           value={semester}
           onChange={(e) => {
@@ -74,12 +74,13 @@ const VerifiedFilters = ({
         >
           <option value="">-- Select Semester --</option>
           {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-            <option key={n}>{n}</option>
+            <option key={n}>Semester {n}</option>
           ))}
         </select>
       </label>
-      {/* branch */}
+      
       <label>
+        Branch
         <select
           value={branch}
           onChange={(e) => {
@@ -95,8 +96,9 @@ const VerifiedFilters = ({
           <option value="CIVIL">CIVIL</option>
         </select>
       </label>
-      {/* examType */}
+      
       <label>
+        Exam Type
         <select
           value={examType}
           onChange={(e) => {
