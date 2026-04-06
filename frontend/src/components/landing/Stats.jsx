@@ -19,7 +19,7 @@ const Stats = () => {
             <p className="stat-label">Downloads</p>
           </div>
           <div className="stat-card">
-            <h3 className="stat-number">500+</h3>
+            <h3 className="stat-number">50+</h3>
             <p className="stat-label">Contributors</p>
           </div>
         </div>
