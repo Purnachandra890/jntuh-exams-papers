@@ -20,13 +20,17 @@
 }
 
 .stat-card {
-  background: white;
-  padding: 3rem 2rem;
-  border-radius: var(--radius-lg);
+  background-color: white;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1.5px, transparent 1.5px);
+  background-size: 16px 16px;
+  padding: 3.5rem 2rem;
+  border-radius: var(--radius-xl);
   border: 1px solid var(--color-border);
   text-align: center;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .stat-card:hover {
