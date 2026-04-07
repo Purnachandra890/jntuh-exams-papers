@@ -38,18 +38,21 @@ const VerifiedPapers = () => {
       const params = {
         degree,
         regulation,
-        semester,
+        semester : semester.replace("Semester ", "").trim(),
         branch,
         examType,
         status: "verified",
       };
 
       try {
+        // Try FIRST backend
         const response = await axios.get(`${API_1}/api/getfile`, { params });
         setFiles(response.data);
-        return;
+        return; // success, stop here
       } catch (error1) {
         console.warn("Primary backend failed, trying backup...");
+
+        // Try SECOND backend
         const response = await axios.get(`${API_2}/api/getfile`, { params });
         setFiles(response.data);
       }
