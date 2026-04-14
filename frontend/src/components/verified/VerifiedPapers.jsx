@@ -35,25 +35,29 @@ const VerifiedPapers = () => {
       setLoading(true);
       setError("");
 
-      const params = {
-        degree,
-        regulation,
-        semester : semester.replace("Semester ", "").trim(),
-        branch,
-        examType,
-        status: "verified",
-      };
+      const params = new URLSearchParams();
+      if (degree) params.append("degree", degree);
+      if (regulation) params.append("regulation", regulation);
+      if (semester) {
+        params.append("semester", semester);
+        params.append("semester", semester.replace("Semester ", "").trim());
+      }
+      if (branch) params.append("branch", branch);
+      if (examType) params.append("examType", examType);
+      params.append("status", "verified");
+
+      const queryStr = params.toString();
 
       try {
         // Try FIRST backend
-        const response = await axios.get(`${API_1}/api/getfile`, { params });
+        const response = await axios.get(`${API_1}/api/getfile?${queryStr}`);
         setFiles(response.data);
         return; // success, stop here
       } catch (error1) {
         console.warn("Primary backend failed, trying backup...");
 
         // Try SECOND backend
-        const response = await axios.get(`${API_2}/api/getfile`, { params });
+        const response = await axios.get(`${API_2}/api/getfile?${queryStr}`);
         setFiles(response.data);
       }
     } catch (finalError) {
