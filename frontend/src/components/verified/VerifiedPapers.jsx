@@ -40,7 +40,6 @@ const VerifiedPapers = () => {
       if (regulation) params.append("regulation", regulation);
       if (semester) {
         params.append("semester", semester);
-        params.append("semester", semester.replace("Semester ", "").trim());
       }
       if (branch) params.append("branch", branch);
       if (examType) params.append("examType", examType);
