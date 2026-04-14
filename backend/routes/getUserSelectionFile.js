@@ -19,7 +19,10 @@ router.get("/", async (req, res) => {
     const filter = {};
     if (degree) filter.degree = degree;
     if (regulation) filter.regulation = regulation;
-    if (semester) filter.semester = semester;
+    if (semester) {
+      const semNum = semester.replace("Semester ", "").trim();
+      filter.semester = { $in: [semNum, `Semester ${semNum}`] };
+    }
     if (branch) filter.branch = branch;
     if (status) filter.status = status;
     if (subject) filter.subject = subject;
