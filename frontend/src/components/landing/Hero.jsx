@@ -23,33 +23,13 @@ const Hero = () => {
           </div>
         </div>
         <div className="hero-visual">
-          {/* Simulated UI Mockup */ }
-          <div className="mockup-window">
-             <div className="mockup-header">
-                <span className="dot dot-red"></span>
-                <span className="dot dot-yellow"></span>
-                <span className="dot dot-green"></span>
-             </div>
-             <div className="mockup-body">
-                <div className="mockup-sidebar"></div>
-                <div className="mockup-content">
-                   <div className="mockup-card">
-                      <div className="mock-card-title"></div>
-                      <div className="mock-card-line"></div>
-                      <div className="mock-card-line short"></div>
-                   </div>
-                   <div className="mockup-card">
-                      <div className="mock-card-title"></div>
-                      <div className="mock-card-line"></div>
-                      <div className="mock-card-line short"></div>
-                   </div>
-                   <div className="mockup-card">
-                      <div className="mock-card-title"></div>
-                      <div className="mock-card-line"></div>
-                      <div className="mock-card-line short"></div>
-                   </div>
-                </div>
-             </div>
+          <div className="phones-wrapper">
+             {/* Replace the src below with your actual image file (e.g., phones.png) once added to the public folder */}
+             <img 
+               src="./../public/phones.png" 
+               alt="JNTUH Exams App on Phones" 
+               className="phones-mockup" 
+             />
           </div>
         </div>
       </div>
