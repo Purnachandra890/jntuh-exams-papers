@@ -26,7 +26,7 @@ const Hero = () => {
           <div className="phones-wrapper">
              {/* Replace the src below with your actual image file (e.g., phones.png) once added to the public folder */}
              <img 
-               src="./../public/phones.png" 
+               src="/phones.png" 
                alt="JNTUH Exams App on Phones" 
                className="phones-mockup" 
              />
