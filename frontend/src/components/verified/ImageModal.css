@@ -37,6 +37,19 @@
   animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.modal-content::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 15;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='350' height='250'><text transform='rotate(-30 175 125)' x='175' y='125' fill='rgba(0,0,0,0.08)' font-size='22' font-family='sans-serif' font-weight='bold' text-anchor='middle'>PROTECTED CONTENT</text></svg>");
+  background-repeat: repeat;
+}
+
 @keyframes modalPop {
   from { transform: scale(0.95) translateY(10px); opacity: 0; }
   to { transform: scale(1) translateY(0); opacity: 1; }
