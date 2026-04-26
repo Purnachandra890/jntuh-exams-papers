@@ -41,7 +41,6 @@ const ImageModal = ({ fileUrl, onClose }) => {
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    document.addEventListener("mouseleave", handleBlur); // Blur if mouse leaves browser
 
     // Initial check
     if (!document.hasFocus()) {
@@ -54,7 +53,6 @@ const ImageModal = ({ fileUrl, onClose }) => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      document.removeEventListener("mouseleave", handleBlur);
     };
   }, []);
 
