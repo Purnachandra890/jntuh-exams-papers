@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import "./ImageModal.css";
 
 const ImageModal = ({ fileUrl, onClose }) => {
+  const [isLoading, setIsLoading] = useState(true);
+
   if (!fileUrl) return null;
 
   return (
@@ -10,8 +12,21 @@ const ImageModal = ({ fileUrl, onClose }) => {
         <button className="modal-close" onClick={onClose}>
           &times;
         </button>
-        <div className="modal-image-container">
-          <img src={fileUrl} alt="Exam Paper" className="modal-image" />
+        
+        {isLoading && (
+          <div className="modal-loader">
+            <div className="modern-spinner"></div>
+            <span className="loader-text">Loading paper...</span>
+          </div>
+        )}
+
+        <div className={`modal-image-container ${isLoading ? 'hidden' : ''}`}>
+          <img 
+            src={fileUrl} 
+            alt="Exam Paper" 
+            className="modal-image" 
+            onLoad={() => setIsLoading(false)}
+          />
         </div>
       </div>
     </div>
