@@ -181,3 +181,60 @@
     padding: 1rem;
   }
 }
+
+/* Screenshot Protection Styles */
+.modal-image-container.blurred .modal-image {
+  filter: blur(25px) grayscale(50%);
+  opacity: 0.3;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: all 0.2s ease;
+}
+
+.blur-overlay-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  z-index: 20;
+  text-align: center;
+  padding: 2rem;
+  color: #0f172a;
+  animation: fadeIn 0.3s ease;
+}
+
+.blur-overlay-message .blur-icon {
+  color: #ef4444;
+  margin-bottom: 1rem;
+  background: white;
+  border-radius: 50%;
+  padding: 1rem;
+  box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.3), 0 8px 10px -6px rgba(239, 68, 68, 0.2);
+}
+
+.blur-overlay-message h3 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #0f172a;
+}
+
+.blur-overlay-message p {
+  font-size: 1.1rem;
+  color: #475569;
+  max-width: 350px;
+  line-height: 1.5;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
