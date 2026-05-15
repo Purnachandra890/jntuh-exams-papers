@@ -4,6 +4,7 @@ import Landing from "./components/landing/Landing";
 import Upload from "./components/uploads/Upload";
 import VerifiedPapers from "./components/verified/VerifiedPapers";
 import OnlineUsersBadge from "./components/OnlineUsersBadge";
+import Chatbot from "./components/chatbot/Chatbot";
 
 function App() {
   const API_1 = import.meta.env.VITE_BACKEND_URL_1;
@@ -26,6 +27,7 @@ function App() {
   }, []);
   return (
     <Router>
+      <Chatbot />
       <OnlineUsersBadge />
       <Routes>
         {/* Home Page Route with Landing Page Components */}

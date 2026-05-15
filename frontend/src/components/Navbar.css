@@ -41,7 +41,8 @@
 
 .navbar-links {
   display: flex;
-  gap: 2rem;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .nav-link {
@@ -49,10 +50,16 @@
   color: var(--color-text-muted);
   transition: var(--transition);
   font-size: 0.95rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
 }
 
 .nav-link:hover {
-  color: var(--color-text);
+  background-color: var(--color-primary);
+  color: white;
+  box-shadow: var(--shadow-md);
 }
 
 .nav-upload-btn {
