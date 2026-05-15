@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
 .env
+venv/
 data/vector_store/
 data/model_cache/
