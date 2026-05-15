@@ -4,25 +4,19 @@ from contextlib import asynccontextmanager
 import logging
 
 from app.models import ChatRequest, ChatResponse
-from app.rag.ingestion import ingest_data
+from app.rag.dependencies import get_paper_index
 from app.rag.retrieval import retrieve_papers
 from app.rag.generation import generate_answer
-from app.rag.dependencies import get_embedding_model, get_chroma_client
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup actions
-    logger.info("Starting up... Initializing RAG components.")
-    # Initialize models and ChromaDB, and run ingestion
-    get_embedding_model()
-    get_chroma_client()
-    ingest_data()
-    logger.info("Startup complete.")
+    logger.info("Starting up... Loading exam paper index.")
+    paper_count = len(get_paper_index())
+    logger.info("Startup complete. Loaded %s papers.", paper_count)
     yield
-    # Shutdown actions
     logger.info("Shutting down...")
 
 app = FastAPI(

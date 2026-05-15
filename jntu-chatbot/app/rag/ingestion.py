@@ -2,7 +2,6 @@ import json
 import os
 import logging
 from app.config import settings
-from app.rag.dependencies import get_embedding_model, get_chroma_client
 
 logger = logging.getLogger(__name__)
 
@@ -57,45 +56,5 @@ def paper_to_metadata(paper):
 
 def ingest_data():
     papers = load_exam_papers(settings.DATA_FILE)
-    if not papers:
-        logger.info("No papers to ingest.")
-        return
-
-    client = get_chroma_client()
-    try:
-        collection = client.get_collection(settings.COLLECTION_NAME)
-        if collection.count() > 0:
-            logger.info(f"Collection {settings.COLLECTION_NAME} already exists with {collection.count()} docs. Skipping ingestion.")
-            return collection
-    except Exception:
-        pass
-
-    documents = [paper_to_text(paper) for paper in papers]
-    metadatas = [paper_to_metadata(paper) for paper in papers]
-    ids = [
-        metadata["_id"] if metadata["_id"] else f"paper_{i}"
-        for i, metadata in enumerate(metadatas)
-    ]
-
-    logger.info("Loading model and generating embeddings...")
-    model = get_embedding_model()
-    embeddings = model.encode(documents, show_progress_bar=False).tolist()
-
-    try:
-        client.delete_collection(settings.COLLECTION_NAME)
-        logger.info("Old collection deleted.")
-    except Exception:
-        logger.info("No old collection found.")
-
-    collection = client.create_collection(name=settings.COLLECTION_NAME)
-
-    logger.info("Adding documents to Chroma...")
-    collection.add(
-        ids=ids,
-        documents=documents,
-        metadatas=metadatas,
-        embeddings=embeddings,
-    )
-    
-    logger.info(f"Ingestion complete. {collection.count()} documents added.")
-    return collection
+    logger.info("Loaded %s papers from %s.", len(papers), settings.DATA_FILE)
+    return papers

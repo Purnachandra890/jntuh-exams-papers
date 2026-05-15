@@ -1,14 +1,8 @@
-# pyrefly: ignore [missing-import]
-from langchain_groq import ChatGroq
+from groq import Groq
 from app.config import settings
 
 def get_llm():
-    return ChatGroq(
-        groq_api_key=settings.GROQ_API_KEY,
-        model=settings.LLM_MODEL_NAME,
-        temperature=0.1,
-        max_tokens=1000
-    )
+    return Groq(api_key=settings.GROQ_API_KEY)
 
 def generate_answer(query: str, retrieved_docs: list) -> str:
     context = "\n\n".join([f"Source: {doc['fileUrl']}\nContent: {doc['document']}" for doc in retrieved_docs]) if retrieved_docs else ""
@@ -43,6 +37,11 @@ USER QUERY:
 
 ANSWER:
 """
-    llm = get_llm()
-    response = llm.invoke(prompt)
-    return response.content
+    client = get_llm()
+    response = client.chat.completions.create(
+        model=settings.LLM_MODEL_NAME,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.1,
+        max_tokens=1000,
+    )
+    return response.choices[0].message.content or ""
