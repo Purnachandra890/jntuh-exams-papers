@@ -7,8 +7,8 @@ def get_llm():
 def generate_answer(query: str, retrieved_docs: list) -> str:
     context = "\n\n".join([f"Source: {doc['fileUrl']}\nContent: {doc['document']}" for doc in retrieved_docs]) if retrieved_docs else ""
 
-    if not context:
-        return "We found no relevant context for the given query."
+    # if not context:
+    #     return "We found no relevant context for the given query."
 
     prompt = f"""
 You are an intelligent university exam paper assistant.
