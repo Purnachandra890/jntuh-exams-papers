@@ -39,18 +39,57 @@ export default function Chatbot() {
     return () => clearInterval(interval);
   }, []);
 
-  const scrollToBottom = useCallback(() => {
+  const scrollToBottom = useCallback((behavior = "smooth") => {
     const el = listRef.current;
     if (!el) return;
-    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    el.scrollTo({ top: el.scrollHeight, behavior });
   }, []);
 
   useEffect(() => {
-    scrollToBottom();
+    scrollToBottom("smooth");
   }, [messages, loading, open, scrollToBottom]);
 
   useEffect(() => {
-    if (open) {
+    const handleResize = () => {
+      const panel = document.getElementById("chatbot-panel");
+      if (panel && window.innerWidth <= 480) {
+        if (window.visualViewport) {
+          panel.style.height = `${window.visualViewport.height}px`;
+          panel.style.top = `${window.visualViewport.offsetTop}px`;
+          panel.style.bottom = "auto";
+        } else {
+          panel.style.height = `${window.innerHeight}px`;
+          panel.style.top = "0px";
+          panel.style.bottom = "auto";
+        }
+      } else if (panel) {
+        panel.style.height = "";
+        panel.style.top = "";
+        panel.style.bottom = "";
+      }
+      scrollToBottom("auto");
+    };
+
+    window.addEventListener("resize", handleResize);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", handleResize);
+      window.visualViewport.addEventListener("scroll", handleResize);
+    }
+    
+    // Initial setup
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener("resize", handleResize);
+        window.visualViewport.removeEventListener("scroll", handleResize);
+      }
+    };
+  }, [scrollToBottom]);
+
+  useEffect(() => {
+    if (open && window.innerWidth > 480) {
       const t = setTimeout(() => inputRef.current?.focus(), 200);
       return () => clearTimeout(t);
     }
@@ -218,6 +257,10 @@ export default function Chatbot() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={onKeyDown}
+                  onFocus={() => {
+                    setTimeout(() => scrollToBottom("auto"), 150);
+                    setTimeout(() => scrollToBottom("auto"), 300);
+                  }}
                   disabled={loading}
                   maxLength={2000}
                   autoComplete="off"

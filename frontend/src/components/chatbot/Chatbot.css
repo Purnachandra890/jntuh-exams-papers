@@ -420,16 +420,43 @@
   }
 
   .chatbot-panel {
-    right: 0.75rem;
-    left: 0.75rem;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
     width: auto;
-    bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
-    max-height: min(85vh, calc(100dvh - 4rem));
-    border-radius: 1rem;
+    height: auto;
+    max-height: none;
+    border-radius: 0;
+    border: none;
+    position: fixed;
+    overscroll-behavior: none;
+  }
+
+  .chatbot-header {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+  }
+
+  .chatbot-body {
+    overflow: hidden;
   }
 
   .chatbot-messages {
-    max-height: min(52vh, 360px);
+    flex: 1;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+    padding-bottom: 1rem;
+  }
+
+  .chatbot-composer {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
   }
 }
 
