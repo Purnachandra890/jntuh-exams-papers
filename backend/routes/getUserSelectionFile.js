@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const File = require("../models/File");
+const { getfileCacheMiddleware } = require("../middlewares/cache.middleware");
 
-router.get("/", async (req, res) => {
-  // console.log("Entered:")
+// Cache-aside: Redis checked before this handler runs (see cache.middleware.js)
+router.get("/", getfileCacheMiddleware(), async (req, res) => {
   try {
     const {
       degree,
@@ -13,9 +14,9 @@ router.get("/", async (req, res) => {
       branch,
       status,
       subject,
-      examType, 
+      examType,
     } = req.query;
-    // console.log(req.query);
+
     const filter = {};
     if (degree) filter.degree = degree;
     if (regulation) filter.regulation = regulation;
@@ -26,7 +27,7 @@ router.get("/", async (req, res) => {
     if (branch) filter.branch = branch;
     if (status) filter.status = status;
     if (subject) filter.subject = subject;
-    if (examType) filter.examType = examType; // Match the field name in your DB
+    if (examType) filter.examType = examType;
 
     const files = await File.find(filter).sort({ createdAt: -1 });
     res.status(200).json(files);

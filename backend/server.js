@@ -68,7 +68,7 @@ const getuserSelectionFile = require("./routes/getUserSelectionFile");
 const verifyFileRoute = require("./routes/verifyFile");
 const deleteFileRoute = require("./routes/deleteFile");
 const recentPapers=require("./routes/recentPapers");
-const { Socket } = require("dgram");
+const { connectRedis } = require("./services/redis.service");
 
 app.use("/api/files", getfiles);
 app.use("/api/upload", uploadRoute);
@@ -78,12 +78,31 @@ app.use("/api/deletefile", deleteFileRoute);
 app.use("/api/recent",recentPapers);
 
 // Connect to MongoDB and start server…
-mongoose
-  .connect(process.env.MONGO_URI, {
-    /* options */
-  })
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("MongoDB error:", err));
+// mongoose
+//   .connect(process.env.MONGO_URI, {
+//     /* options */
+//   })
+//   .then(() => console.log("Connected to MongoDB"))
+//   .catch((err) => console.error("MongoDB error:", err));
 
 const port = 5000;
-server.listen(port, () => console.log(`Server running on port ${port}`));
+
+async function startServer() {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("✅ Connected to MongoDB");
+
+    await connectRedis();
+
+    server.listen(port, () => {
+      console.log(`🚀 Server running on port ${port}`);
+    });
+
+  } catch (error) {
+    console.error("Startup error:", error);
+    process.exit(1);
+  }
+}
+
+
+startServer();

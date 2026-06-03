@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const File = require('../models/File');
+const { invalidateAllGetfileCache } = require('../utils/cacheInvalidation');
 // Approve file
 router.get('/:id/approve', async (req, res) => {
   try {
@@ -16,6 +17,8 @@ router.get('/:id/approve', async (req, res) => {
     if (!updatedFile) {
       return res.status(404).send('File not found');
     }
+
+    await invalidateAllGetfileCache();
 
     res.send('<h2>File Approved Successfully ✅</h2>');
   } catch (err) {
