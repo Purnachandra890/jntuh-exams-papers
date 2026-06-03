@@ -22,6 +22,7 @@ function getfileCacheMiddleware() {
     const cached = await redisService.cacheGet(cacheKey);
     if (cached) {
       res.setHeader("X-Cache", "HIT");
+      res.setHeader("X-Data-Source", "redis");
       try {
         return res.status(200).json(JSON.parse(cached));
       } catch {
@@ -31,6 +32,7 @@ function getfileCacheMiddleware() {
 
     // --- Cache MISS: run handler and store successful responses ---
     res.setHeader("X-Cache", "MISS");
+    res.setHeader("X-Data-Source", "mongodb");
 
     const originalJson = res.json.bind(res);
     res.json = (body) => {

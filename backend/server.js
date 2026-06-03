@@ -24,7 +24,8 @@ app.use(cors({
     } else {
       callback(new Error('Not allowed by CORS'));
     }
-  }
+  },
+  exposedHeaders: ["X-Cache", "X-Data-Source"],
 }));
 
 const io = new Server(server, {
