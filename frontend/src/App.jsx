@@ -14,11 +14,11 @@ function App() {
       try {
         // console.log("calling servers..");
         const res = await fetch(url + "/api/ping");
-        const text=await res.text();
-        console.log(text);
+        await res.text();
+        // console.log(text);
         // console.log("Response from", url, ":", text);
       } catch (error) {
-        console.error("Server error:", url, error.message);
+        // console.error("Server error:", url, error.message);
       }
     };
 

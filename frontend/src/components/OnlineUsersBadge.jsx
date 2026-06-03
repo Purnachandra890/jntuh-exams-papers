@@ -18,7 +18,7 @@ export default function OnlineUsersBadge() {
       });
 
       socket.on("connect", () => {
-        console.log("✅ Connected to Primary Backend");
+        // console.log("✅ Connected to Primary Backend");
       });
 
       socket.on("OnlineUsers", (count) => {
@@ -26,7 +26,7 @@ export default function OnlineUsersBadge() {
       });
 
       socket.on("connect_error", () => {
-        console.warn("❌ Primary server failed. Switching to backup...");
+        // console.warn("❌ Primary server failed. Switching to backup...");
         socket.disconnect();
 
         socket = io(SOCKET_URL_2, {
@@ -35,7 +35,7 @@ export default function OnlineUsersBadge() {
         });
 
         socket.on("connect", () => {
-          console.log("✅ Connected to Backup Backend");
+          // console.log("✅ Connected to Backup Backend");
         });
 
         socket.on("OnlineUsers", (count) => {

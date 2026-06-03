@@ -63,7 +63,7 @@ const Upload = () => {
       };
 
       try {
-        console.log("Trying Primary Backend...");
+        // console.log("Trying Primary Backend...");
         const res = await axios.post(`${API_1}/api/upload`, formData, config);
 
         if (res.status === 201) {
@@ -72,7 +72,7 @@ const Upload = () => {
           return;
         }
       } catch (primaryErr) {
-        console.warn("Primary backend failed, switching to backup...");
+        // console.warn("Primary backend failed, switching to backup...");
       }
 
       // Try Backup backend
@@ -84,7 +84,7 @@ const Upload = () => {
           resetForm();
         }
       } catch (backupErr) {
-        console.error("Both backends failed:", backupErr);
+        // console.error("Both backends failed:", backupErr);
         alert("Both servers are down. Please try again later.");
       }
     } finally {

@@ -51,19 +51,19 @@ const VerifiedPapers = () => {
       try {
         // Try FIRST backend
         const response = await axios.get(`${API_1}/api/getfile?${queryStr}`);
-        logDataSource(response, "Verified papers (primary API)");
+        logDataSource(response, "Verified papers");
         setFiles(response.data);
         return; // success, stop here
       } catch (error1) {
-        console.warn("Primary backend failed, trying backup...");
+        // console.warn("Primary backend failed, trying backup...");
 
         // Try SECOND backend
         const response = await axios.get(`${API_2}/api/getfile?${queryStr}`);
-        logDataSource(response, "Verified papers (backup API)");
+        logDataSource(response, "Verified papers");
         setFiles(response.data);
       }
     } catch (finalError) {
-      console.error("Both backends failed:", finalError);
+      // console.error("Both backends failed:", finalError);
       setError("Both servers are down. Please try again later.");
     } finally {
       setLoading(false);

@@ -10,8 +10,8 @@ export function logDataSource(response, label = "GET /api/getfile") {
 
   const fromRedis = source === "redis";
   const message = fromRedis
-    ? `${label}: served from Redis (cache hit)`
-    : `${label}: served from MongoDB (cache miss)`;
+    ? `${label} served from Redis (cache hit)`
+    : `${label} served from MongoDB (cache miss)`;
 
   if (fromRedis) {
     console.info(`%c${message}`, "color: #22c55e; font-weight: bold;");
