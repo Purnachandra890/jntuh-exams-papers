@@ -14,8 +14,13 @@ const server = http.createServer(app);
 
 // 1) CORS whitelist
 const allowedOrigins = [
-  'http://localhost:5173',
-  'https://jntuh-exams-papers.onrender.com'
+  "http://localhost:5173",
+  "http://localhost:8080",
+  "https://jntuh-exams-papers.onrender.com",
+  ...(process.env.LOAD_BALANCER_URL ? [process.env.LOAD_BALANCER_URL] : []),
+  ...(process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(",").map((o) => o.trim())
+    : []),
 ];
 app.use(cors({
   origin: (origin, callback) => {
@@ -25,15 +30,18 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-  exposedHeaders: ["X-Cache", "X-Data-Source"],
+  exposedHeaders: ["X-Cache", "X-Data-Source", "X-Server-Id", "X-Upstream-Server"],
 }));
+
+// Identify which backend instance handled the request (visible in browser devtools)
+app.use((req, res, next) => {
+  res.setHeader("X-Server-Id", process.env.SERVER_ID || "backend-unknown");
+  next();
+});
 
 const io = new Server(server, {
   cors: {
-    origin: [
-      "http://localhost:5173",
-      "https://jntuh-exams-papers.onrender.com",
-    ],
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
   },
 });
@@ -44,22 +52,36 @@ app.use(morgan("dev"));
 
 
 let onlineUsers = 0;
-io.on("connection",(socket)=>{
+io.on("connection", (socket) => {
   onlineUsers++;
-  // console.log("User connected. Online:", onlineUsers);
-  io.emit("OnlineUsers",onlineUsers);
-  socket.on("disconnect",()=>{
-    onlineUsers=Math.max(onlineUsers-1,0);
-    // console.log("User disconnected. Online:", onlineUsers);
-    io.emit("OnlineUsers",onlineUsers);
-  })
-})
+  io.emit("OnlineUsers", onlineUsers);
+  socket.emit("OnlineUsers", onlineUsers);
+
+  socket.on("disconnect", () => {
+    onlineUsers = Math.max(onlineUsers - 1, 0);
+    io.emit("OnlineUsers", onlineUsers);
+  });
+});
 
 
 
-// 2) Health‑check endpoint
+// 2) Health-check endpoints (used by load balancer / Render)
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "healthy",
+    server: process.env.SERVER_ID || "backend-unknown",
+  });
+});
+
 app.get("/api/ping", (req, res) => {
   res.status(200).json({ status: "ok" });
+});
+
+// Testing endpoint — proves which backend instance handled the request
+app.get("/api/test-server", (req, res) => {
+  res.status(200).json({
+    server: process.env.SERVER_ID || "backend-unknown",
+  });
 });
 
 // Import & mount your other routes
@@ -86,7 +108,7 @@ app.use("/api/recent",recentPapers);
 //   .then(() => console.log("Connected to MongoDB"))
 //   .catch((err) => console.error("MongoDB error:", err));
 
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 async function startServer() {
   try {

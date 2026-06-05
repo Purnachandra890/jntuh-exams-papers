@@ -7,6 +7,7 @@ import VerifiedFileList from "./VerifiedFileList";
 import Navbar from "../Navbar";
 import Footer from "../landing/Footer";
 import { logDataSource } from "../../utils/logDataSource";
+import { API_BASE_URL } from "../../config/api";
 
 const VerifiedPapers = () => {
   const navigate = useNavigate();
@@ -22,16 +23,12 @@ const VerifiedPapers = () => {
   const [error, setError] = useState("");
   const [showSlowMessage, setShowSlowMessage] = useState(false);
 
-  const API_1 = import.meta.env.VITE_BACKEND_URL_1;
-  const API_2 = import.meta.env.VITE_BACKEND_URL_2;
-
-  useEffect(() => {
-    if (degree && regulation && semester && branch && examType) {
-      fetchFiles();
-    }
-  }, [degree, regulation, semester, branch, examType]);
-
   const fetchFiles = async () => {
+    if (!API_BASE_URL) {
+      setError("API URL is not configured.");
+      return;
+    }
+
     try {
       setLoading(true);
       setError("");
@@ -47,28 +44,21 @@ const VerifiedPapers = () => {
       params.append("status", "verified");
 
       const queryStr = params.toString();
-
-      try {
-        // Try FIRST backend
-        const response = await axios.get(`${API_1}/api/getfile?${queryStr}`);
-        logDataSource(response, "Verified papers");
-        setFiles(response.data);
-        return; // success, stop here
-      } catch (error1) {
-        // console.warn("Primary backend failed, trying backup...");
-
-        // Try SECOND backend
-        const response = await axios.get(`${API_2}/api/getfile?${queryStr}`);
-        logDataSource(response, "Verified papers");
-        setFiles(response.data);
-      }
+      const response = await axios.get(`${API_BASE_URL}/api/getfile?${queryStr}`);
+      logDataSource(response, "Verified papers");
+      setFiles(response.data);
     } catch (finalError) {
-      // console.error("Both backends failed:", finalError);
-      setError("Both servers are down. Please try again later.");
+      setError("Unable to load papers. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (degree && regulation && semester && branch && examType) {
+      fetchFiles();
+    }
+  }, [degree, regulation, semester, branch, examType]);
 
   useEffect(() => {
     let timer;

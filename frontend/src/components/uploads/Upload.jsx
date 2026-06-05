@@ -8,15 +8,14 @@ import UploadOneSide from "./UploadOneSide";
 import UploadTwoSides from "./UploadTwoSides";
 import UploadButton from "./UploadButton";
 import Footer from "../landing/Footer";
+import { API_BASE_URL } from "../../config/api";
 
 const Upload = () => {
   const navigate = useNavigate();
 
-  // Refs
   const frontInputRef = useRef(null);
   const backInputRef = useRef(null);
 
-  // Dropdown states
   const [degree, setDegree] = useState("");
   const [regulation, setRegulation] = useState("");
   const [semester, setSemester] = useState("");
@@ -25,7 +24,6 @@ const Upload = () => {
   const [examType, setExamType] = useState("");
   const [paperSides, setPaperSides] = useState("");
 
-  // File states
   const [frontImage, setFrontImage] = useState(null);
   const [backImage, setBackImage] = useState(null);
   const [frontPreview, setFrontPreview] = useState(null);
@@ -33,14 +31,15 @@ const Upload = () => {
 
   const [isUploading, setIsUploading] = useState(false);
 
-  const API_1 = import.meta.env.VITE_BACKEND_URL_1;
-  const API_2 = import.meta.env.VITE_BACKEND_URL_2;
-
   const handleUpload = async () => {
     if (!paperSides) return alert("Please select paper sides.");
     if (!frontImage) return alert("Front image required.");
     if (paperSides === "two" && !backImage)
       return alert("Back image required.");
+
+    if (!API_BASE_URL) {
+      return alert("API URL is not configured.");
+    }
 
     const formData = new FormData();
     formData.append("degree", degree);
@@ -59,34 +58,17 @@ const Upload = () => {
 
       const config = {
         headers: { "Content-Type": "multipart/form-data" },
-        timeout: 8000, 
+        timeout: 8000,
       };
 
-      try {
-        // console.log("Trying Primary Backend...");
-        const res = await axios.post(`${API_1}/api/upload`, formData, config);
+      const res = await axios.post(`${API_BASE_URL}/api/upload`, formData, config);
 
-        if (res.status === 201) {
-          alert("Upload successful (Pending review)");
-          resetForm();
-          return;
-        }
-      } catch (primaryErr) {
-        // console.warn("Primary backend failed, switching to backup...");
+      if (res.status === 201) {
+        alert("Upload successful (Pending review)");
+        resetForm();
       }
-
-      // Try Backup backend
-      try {
-        const res = await axios.post(`${API_2}/api/upload`, formData, config);
-
-        if (res.status === 201) {
-          alert("Upload successful (Pending review)");
-          resetForm();
-        }
-      } catch (backupErr) {
-        // console.error("Both backends failed:", backupErr);
-        alert("Both servers are down. Please try again later.");
-      }
+    } catch (error) {
+      alert("Upload failed. Please try again later.");
     } finally {
       setIsUploading(false);
     }
@@ -110,14 +92,13 @@ const Upload = () => {
   return (
     <div className="upload-page-container">
       <Navbar />
-      
+
       <div className="container">
         <div className="upload-header">
           <h1>Upload Paper</h1>
           <p>Help the community by sharing verified exam papers.</p>
         </div>
 
-        {/* Paper Details Card */}
         <div className="upload-card">
           <h2 className="upload-card-title">1. Paper Details</h2>
           <DropdownSection
@@ -138,12 +119,10 @@ const Upload = () => {
           />
         </div>
 
-        {/* Upload Action Card */}
         {paperSides && (
           <div className="upload-card">
             <h2 className="upload-card-title">2. Upload Images</h2>
             <div className="file-upload-section">
-              {/* ONE-SIDE UPLOAD */}
               {paperSides === "one" && (
                 <UploadOneSide
                   frontImage={frontImage}
@@ -154,7 +133,6 @@ const Upload = () => {
                 />
               )}
 
-              {/* TWO SIDES UPLOAD */}
               {paperSides === "two" && (
                 <UploadTwoSides
                   frontImage={frontImage}
@@ -173,7 +151,6 @@ const Upload = () => {
           </div>
         )}
 
-        {/* CTA Section */}
         <div className="upload-action-container">
           <UploadButton
             canUpload={
@@ -192,7 +169,7 @@ const Upload = () => {
           />
         </div>
       </div>
-      
+
       <Footer />
     </div>
   );

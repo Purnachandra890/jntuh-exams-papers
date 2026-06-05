@@ -1,62 +1,55 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import "./OnlineUsersBadge.css";
-
-const SOCKET_URL_1 = import.meta.env.VITE_BACKEND_URL_1;
-const SOCKET_URL_2 = import.meta.env.VITE_BACKEND_URL_2;
+import { SOCKET_URL } from "../config/api";
 
 export default function OnlineUsersBadge() {
   const [onlineUsers, setOnlineUsers] = useState(0);
+  const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    let socket;
+    if (!SOCKET_URL) {
+      console.warn("VITE_SOCKET_URL is not set. Online users badge disabled.");
+      return;
+    }
 
-    const connectSocket = () => {
-      socket = io(SOCKET_URL_1, {
-        transports: ["websocket"],
-        timeout: 5000,
-      });
+    const socket = io(SOCKET_URL, {
+      transports: ["websocket", "polling"],
+      timeout: 10000,
+      reconnection: true,
+      reconnectionAttempts: 5,
+    });
 
-      socket.on("connect", () => {
-        // console.log("✅ Connected to Primary Backend");
-      });
+    socket.on("connect", () => {
+      setConnected(true);
+    });
 
-      socket.on("OnlineUsers", (count) => {
-        setOnlineUsers(count);
-      });
+    socket.on("disconnect", () => {
+      setConnected(false);
+    });
 
-      socket.on("connect_error", () => {
-        // console.warn("❌ Primary server failed. Switching to backup...");
-        socket.disconnect();
+    socket.on("connect_error", (error) => {
+      setConnected(false);
+      console.warn("Socket.IO connection failed:", error.message);
+    });
 
-        socket = io(SOCKET_URL_2, {
-          transports: ["websocket"],
-          timeout: 5000,
-        });
-
-        socket.on("connect", () => {
-          // console.log("✅ Connected to Backup Backend");
-        });
-
-        socket.on("OnlineUsers", (count) => {
-          setOnlineUsers(count);
-        });
-      });
-    };
-
-    connectSocket();
+    socket.on("OnlineUsers", (count) => {
+      setOnlineUsers(count);
+    });
 
     return () => {
-      if (socket) socket.disconnect();
+      socket.disconnect();
     };
   }, []);
 
   return (
-    <div className="online-users-badge">
+    <div
+      className={`online-users-badge${connected ? "" : " online-users-badge--offline"}`}
+      title={connected ? "Connected to live user feed" : "Disconnected from live user feed"}
+    >
       <span className="status-indicator"></span>
       <span className="status-label">Live Users:</span>
-      <span className="status-count">{onlineUsers}</span>
+      <span className="status-count">{connected ? onlineUsers : "—"}</span>
     </div>
   );
 }
-

@@ -29,6 +29,18 @@
   border-color: var(--color-primary);
 }
 
+.online-users-badge--offline {
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.online-users-badge--offline .status-indicator {
+  background-color: #ef4444;
+}
+
+.online-users-badge--offline .status-indicator::after {
+  display: none;
+}
+
 .status-indicator {
   position: relative;
   width: 10px;
