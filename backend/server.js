@@ -91,6 +91,7 @@ const getuserSelectionFile = require("./routes/getUserSelectionFile");
 const verifyFileRoute = require("./routes/verifyFile");
 const deleteFileRoute = require("./routes/deleteFile");
 const recentPapers=require("./routes/recentPapers");
+const authRoute = require("./routes/auth");
 const { connectRedis } = require("./services/redis.service");
 
 app.use("/api/files", getfiles);
@@ -99,6 +100,7 @@ app.use("/api/getfile", getuserSelectionFile);
 app.use("/api/verify", verifyFileRoute);
 app.use("/api/deletefile", deleteFileRoute);
 app.use("/api/recent",recentPapers);
+app.use("/api/auth", authRoute);
 
 // Connect to MongoDB and start server…
 // mongoose

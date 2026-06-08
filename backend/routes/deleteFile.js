@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const File = require('../models/File');
 const { invalidateAllGetfileCache } = require('../utils/cacheInvalidation');
+const { requireAdmin } = require('../middlewares/auth.middleware');
 
 // DELETE route to remove a file from the database
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAdmin, async (req, res) => {
   try {
     const fileId = req.params.id;
 

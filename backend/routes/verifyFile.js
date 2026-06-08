@@ -3,8 +3,10 @@ const router = express.Router();
 
 const File = require('../models/File');
 const { invalidateAllGetfileCache } = require('../utils/cacheInvalidation');
+const { requireAdmin } = require('../middlewares/auth.middleware');
+
 // Approve file
-router.get('/:id/approve', async (req, res) => {
+router.get('/:id/approve', requireAdmin, async (req, res) => {
   try {
     const fileId = req.params.id;
 
@@ -28,7 +30,7 @@ router.get('/:id/approve', async (req, res) => {
 });
 
 // Reject file
-router.get('/:id/reject', async (req, res) => {
+router.get('/:id/reject', requireAdmin, async (req, res) => {
   try {
     const fileId = req.params.id;
 
