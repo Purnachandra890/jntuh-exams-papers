@@ -3,10 +3,10 @@ const router = express.Router();
 
 const File = require('../models/File');
 const { invalidateAllGetfileCache } = require('../utils/cacheInvalidation');
-const { requireAdmin } = require('../middlewares/auth.middleware');
+const { requireAdminOrEmailToken } = require('../middlewares/auth.middleware');
 
-// Approve file
-router.get('/:id/approve', requireAdmin, async (req, res) => {
+// Approve file (Bearer token or signed ?token= from email)
+router.get('/:id/approve', requireAdminOrEmailToken('approve'), async (req, res) => {
   try {
     const fileId = req.params.id;
 
@@ -29,8 +29,8 @@ router.get('/:id/approve', requireAdmin, async (req, res) => {
   }
 });
 
-// Reject file
-router.get('/:id/reject', requireAdmin, async (req, res) => {
+// Reject file (Bearer token or signed ?token= from email)
+router.get('/:id/reject', requireAdminOrEmailToken('reject'), async (req, res) => {
   try {
     const fileId = req.params.id;
 
