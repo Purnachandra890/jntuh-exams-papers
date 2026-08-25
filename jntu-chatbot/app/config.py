@@ -1,11 +1,15 @@
-from pydantic_settings import BaseSettings
+from typing import Optional
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    GROQ_API_KEY: str
-    LLM_MODEL_NAME: str = "llama3-8b-8192" # qwen/qwen3-32b is often not valid depending on groq api update
-    DATA_FILE: str = "data/exam_papers.txt"
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    class Config:
-        env_file = ".env"
+    GROQ_API_KEY: str
+    LLM_MODEL_NAME: str = "llama3-8b-8192"
+    DATA_FILE: str = "data/exam_papers.txt"
+    REDIS_URL: Optional[str] = None
+    RATE_LIMIT_HOUR: Optional[int] = None
+    RATE_LIMIT_DAY: Optional[int] = None
 
 settings = Settings()
+

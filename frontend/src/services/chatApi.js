@@ -11,6 +11,15 @@ const getBaseUrl = () => {
   return "http://127.0.0.1:8000";
 };
 
+export function stripThinkingTags(text) {
+  if (!text || typeof text !== "string") return "";
+  return text
+    .replace(/<(think|thought|reasoning)>[\s\S]*?<\/\1>/gi, "")
+    .replace(/<(think|thought|reasoning)>[\s\S]*/gi, "")
+    .replace(/<\/?(think|thought|reasoning)>/gi, "")
+    .trim();
+}
+
 /**
  * @param {string} query
  * @returns {Promise<{ success: boolean, answer?: string, sources?: unknown[] }>}
@@ -73,9 +82,12 @@ export async function sendChatMessage(query) {
     throw new Error("The assistant returned an empty answer.");
   }
 
+  const cleanedAnswer = stripThinkingTags(data.answer);
+
   return {
     success: true,
-    answer: data.answer,
+    answer: cleanedAnswer || "I couldn't find an answer for that request.",
     sources: Array.isArray(data.sources) ? data.sources : [],
   };
 }
+

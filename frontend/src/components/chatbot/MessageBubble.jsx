@@ -2,13 +2,25 @@ import "./MessageBubble.css";
 
 const EXAM_PAPER_LINK_TEXT = "Click here to visit the exam paper";
 
+function stripThinkingTags(text) {
+  if (!text || typeof text !== "string") return "";
+  return text
+    .replace(/<(think|thought|reasoning)>[\s\S]*?<\/\1>/gi, "")
+    .replace(/<(think|thought|reasoning)>[\s\S]*/gi, "")
+    .replace(/<\/?(think|thought|reasoning)>/gi, "")
+    .trim();
+}
+
 /**
  * Split plain text into segments; URLs become clickable links (no markdown).
  */
 function splitTextWithLinks(text) {
   if (!text) return [];
+  text = stripThinkingTags(text);
+  if (!text) return [];
   // Ensure list items start on a new line
   text = text.replace(/([^\n])\s+(\d+\.\s)/g, '$1\n\n$2');
+
   const re = /(https?:\/\/[^\s<>"{}|\\^`[\]]+)/gi;
   const parts = [];
   let last = 0;

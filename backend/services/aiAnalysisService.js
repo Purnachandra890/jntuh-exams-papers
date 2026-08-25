@@ -72,7 +72,11 @@ function parseMatchReport(rawContent) {
     throw new Error("Empty response from AI model");
   }
 
-  let jsonStr = rawContent.trim();
+  let jsonStr = rawContent
+    .replace(/<(think|thought|reasoning)>[\s\S]*?<\/\1>/gi, "")
+    .replace(/<(think|thought|reasoning)>[\s\S]*/gi, "")
+    .replace(/<\/?(think|thought|reasoning)>/gi, "")
+    .trim();
 
   // Strip markdown code fences if present
   const fenceMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
