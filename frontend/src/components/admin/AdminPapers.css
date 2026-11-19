@@ -223,6 +223,37 @@
   margin: 0 auto;
 }
 
+.admin-success-banner {
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+}
+
+.banner-close-btn {
+  background: transparent;
+  border: none;
+  color: #065f46;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  line-height: 1;
+  opacity: 0.7;
+  transition: var(--transition);
+}
+
+.banner-close-btn:hover {
+  opacity: 1;
+}
+
 .results-header-admin {
   display: flex;
   align-items: center;
@@ -278,6 +309,10 @@
   border-left: 4px solid #f59e0b; /* Amber yellow */
 }
 
+.rejected-border {
+  border-left: 4px solid #ef4444; /* Red */
+}
+
 .card-top {
   margin-bottom: 1.5rem;
 }
@@ -321,6 +356,11 @@
   color: #d97706;
 }
 
+.status-pill.rejected {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
 .metadata-tag-grid {
   display: flex;
   flex-wrap: wrap;
@@ -357,6 +397,11 @@
   font-weight: 600;
   border-radius: var(--radius-md);
   box-shadow: none;
+}
+
+.card-actions-row .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .view-action-btn {

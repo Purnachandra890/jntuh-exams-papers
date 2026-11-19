@@ -19,8 +19,9 @@ const AdminPapers = () => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [selectedFileUrl, setSelectedFileUrl] = useState(null);
-  const [actionLoading, setActionLoading] = useState({}); // Track loading state of individual actions (approve/delete)
+  const [actionLoading, setActionLoading] = useState({}); // Track loading state of individual actions (accepting/deleting)
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
@@ -46,6 +47,7 @@ const AdminPapers = () => {
       const response = await axios.get(`${API_BASE_URL}/api/getfile?${params.toString()}`);
       setFiles(response.data);
     } catch (err) {
+      console.error("Fetch papers error:", err);
       setError("Unable to load papers. Please try again later.");
     } finally {
       setLoading(false);
@@ -90,6 +92,38 @@ const AdminPapers = () => {
     setPassword("");
   };
 
+  const handleAccept = async (id) => {
+    if (!window.confirm("Are you sure you want to accept this pending exam paper? It will be marked as verified.")) return;
+
+    const token = localStorage.getItem("adminToken");
+    setActionLoading((prev) => ({ ...prev, [id]: "accepting" }));
+
+    try {
+      await axios.put(
+        `${API_BASE_URL}/api/verify/${id}/approve`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      setSuccessMessage("Paper accepted and verified successfully! ✅");
+      setTimeout(() => setSuccessMessage(""), 4000);
+
+      // If viewing pending list, remove it; otherwise mark as verified
+      setFiles((prev) => {
+        if (status === "pending") {
+          return prev.filter((f) => f._id !== id);
+        }
+        return prev.map((f) => (f._id === id ? { ...f, status: "verified" } : f));
+      });
+    } catch (err) {
+      alert("Failed to accept paper: " + (err.response?.data?.message || err.message));
+    } finally {
+      setActionLoading((prev) => ({ ...prev, [id]: null }));
+    }
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to PERMANENTLY delete this paper from the database? This action cannot be undone.")) return;
 
@@ -101,6 +135,9 @@ const AdminPapers = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       
+      setSuccessMessage("Paper deleted successfully.");
+      setTimeout(() => setSuccessMessage(""), 4000);
+
       // Remove from UI list
       setFiles((prev) => prev.filter((f) => f._id !== id));
     } catch (err) {
@@ -166,6 +203,7 @@ const AdminPapers = () => {
               <option value="">All Statuses</option>
               <option value="pending">Pending Review</option>
               <option value="verified">Verified Papers</option>
+              <option value="rejected">Rejected Papers</option>
             </select>
             <button onClick={handleLogout} className="btn btn-outline logout-btn">
               Sign Out
@@ -175,6 +213,19 @@ const AdminPapers = () => {
 
         {/* Results directory */}
         <div className="results-section">
+          {successMessage && (
+            <div className="admin-success-banner">
+              <span>{successMessage}</span>
+              <button
+                className="banner-close-btn"
+                onClick={() => setSuccessMessage("")}
+                aria-label="Dismiss message"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
           <div className="results-header-admin">
             <h2>Paper Catalog</h2>
             {!loading && (
@@ -199,7 +250,16 @@ const AdminPapers = () => {
           ) : (
             <div className="admin-grid">
               {files.map((file) => (
-                <div key={file._id} className={`admin-paper-card ${file.status === "verified" ? "verified-border" : "pending-border"}`}>
+                <div
+                  key={file._id}
+                  className={`admin-paper-card ${
+                    file.status === "verified"
+                      ? "verified-border"
+                      : file.status === "rejected"
+                      ? "rejected-border"
+                      : "pending-border"
+                  }`}
+                >
                   <div className="card-top">
                     <div className="card-title-section">
                       <h4>{file.subject || "Exam Paper"}</h4>
@@ -225,18 +285,36 @@ const AdminPapers = () => {
                     <button
                       className="btn btn-outline view-action-btn"
                       onClick={() => setSelectedFileUrl(file.fileUrl)}
-                      disabled={actionLoading[file._id]}
+                      disabled={Boolean(actionLoading[file._id])}
                     >
                       View
                     </button>
-                    
+
+                    {file.status === "pending" && (
+                      <button
+                        className="btn approve-action-btn"
+                        onClick={() => handleAccept(file._id)}
+                        disabled={Boolean(actionLoading[file._id])}
+                        title="Accept and verify this paper"
+                      >
+                        {actionLoading[file._id] === "accepting" ? (
+                          <span className="small-spinner"></span>
+                        ) : (
+                          "Accept"
+                        )}
+                      </button>
+                    )}
 
                     <button
                       className="btn delete-action-btn"
                       onClick={() => handleDelete(file._id)}
-                      disabled={actionLoading[file._id]}
+                      disabled={Boolean(actionLoading[file._id])}
                     >
-                      {actionLoading[file._id] === "deleting" ? <span className="small-spinner"></span> : "Delete"}
+                      {actionLoading[file._id] === "deleting" ? (
+                        <span className="small-spinner"></span>
+                      ) : (
+                        "Delete"
+                      )}
                     </button>
                   </div>
                 </div>
