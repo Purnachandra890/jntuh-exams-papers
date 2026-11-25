@@ -6,6 +6,7 @@ import VerifiedPapers from "./components/verified/VerifiedPapers";
 import AdminPapers from "./components/admin/AdminPapers";
 import OnlineUsersBadge from "./components/OnlineUsersBadge";
 import Chatbot from "./components/chatbot/Chatbot";
+import ChatbotTipToast from "./components/common/ChatbotTipToast";
 import { API_BASE_URL } from "./config/api";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
     <Router>
       <Chatbot />
       <OnlineUsersBadge />
+      <ChatbotTipToast />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/upload" element={<Upload />} />

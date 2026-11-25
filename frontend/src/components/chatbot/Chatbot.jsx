@@ -33,6 +33,17 @@ export default function Chatbot() {
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
 
   useEffect(() => {
+    const handleOpenChatbot = (e) => {
+      setOpen(true);
+      if (e.detail?.query) {
+        setInput(e.detail.query);
+      }
+    };
+    window.addEventListener("open-chatbot", handleOpenChatbot);
+    return () => window.removeEventListener("open-chatbot", handleOpenChatbot);
+  }, []);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       setPlaceholderIndex((prev) => (prev + 1) % PLACEHOLDER_SUBJECTS.length);
     }, 3500);
